@@ -33,16 +33,16 @@ def build_call_tag_filter(reported: bool, resolved: bool) -> str:
         return const.ALL
 
 
-def get_auth_header(jwt: str) -> Dict[str, str]:
+def get_auth_header(token: str) -> Dict[str, str]:
     """
-    Get the authorization header for the given JWT.
+    Get the authorization header for the given auth token.
 
-    :param jwt: A jwt token.
-    :type jwt: str
+    :param token: An auth token.
+    :type token: str
     :return: The authorization header.
     :rtype: Dict[str, str]
     """
-    return {const.AUTHORIZATION: f"Bearer {jwt}"}
+    return {const.AUTHORIZATION: f"Bearer {token}"}
 
 
 def get_full_range(current_page: int, total_pages: int) -> Iterable[int]:
@@ -227,26 +227,28 @@ async def get(
         return calls_response
 
 
-async def get_metadata(url: str, jwt: str, params: dict) -> dict:
+async def get_metadata(url: str, token: str, params: dict) -> dict:
     """
     Get metadata for a call.
 
     :param url: The endpoint for fetching call and related data.
     :type url: str
-    :param jwt: A JWT token.
-    :type jwt: str
+    :param token: An auth token.
+    :type token: str
     :param params: API query params.
     :type params: dict
     :return: A call's metadata.
     :rtype: dict
     """
     params_ = copy.deepcopy(params)
-    async with aiohttp.ClientSession(url, headers={**get_auth_header(jwt)}) as session:
+    async with aiohttp.ClientSession(
+        url, headers={**get_auth_header(token)}
+    ) as session:
         return await get(session, const.ROUTE__CALL, params_, inflate=False)
 
 
 async def inflate_calls_in_memory(
-    url: str, jwt: str, params: dict, pages_to_read: Iterable[int]
+    url: str, token: str, params: dict, pages_to_read: Iterable[int]
 ) -> List[dict]:
     """
     Inflate calls in memory.
@@ -255,8 +257,8 @@ async def inflate_calls_in_memory(
 
     :param url: The endpoint for fetching call and related data.
     :type url: str
-    :param jwt: A JWT token.
-    :type jwt: str
+    :param token: An auth token.
+    :type token: str
     :param params: API query params.
     :type params: dict
     :param pages_to_read: A list of pages to read calls from (paginated API).
@@ -264,7 +266,9 @@ async def inflate_calls_in_memory(
     :return: A list of calls.
     :rtype: List[dict]
     """
-    async with aiohttp.ClientSession(url, headers={**get_auth_header(jwt)}) as session:
+    async with aiohttp.ClientSession(
+        url, headers={**get_auth_header(token)}
+    ) as session:
         responses = await asyncio.gather(
             *[
                 asyncio.ensure_future(
@@ -294,10 +298,12 @@ def save_call(dir: str, turns: Iterable[dict]) -> str:
 
 
 async def inflate_calls_in_files(
-    url: str, jwt: str, params: dict, pages_to_read: Iterable[int]
+    url: str, token: str, params: dict, pages_to_read: Iterable[int]
 ) -> str:
     temp_dir = tempfile.mkdtemp()
-    async with aiohttp.ClientSession(url, headers={**get_auth_header(jwt)}) as session:
+    async with aiohttp.ClientSession(
+        url, headers={**get_auth_header(token)}
+    ) as session:
         for page in pages_to_read:
             turns = await get(
                 session, const.ROUTE__CALL, params, page=page, inflate=False
@@ -308,7 +314,7 @@ async def inflate_calls_in_files(
 
 async def sample(
     url: str,
-    jwt: str,
+    token: str,
     start_date: str,
     end_date: str,
     lang_code: str,
@@ -319,15 +325,15 @@ async def sample(
     resolved: bool = True,
     custom_search_key: Optional[str] = None,
     custom_search_value: Optional[str] = None,
-    inflate: Optional[str] = None,
-) -> Union[str, List[dict]]:
+    save: Optional[str] = None,
+) -> str:
     """
     Sample calls.
 
     :param url: The endpoint for fetching call and related data.
     :type url: str
-    :param jwt: A JWT token.
-    :type jwt: str
+    :param token: An auth token.
+    :type token: str
     :param start_date: A start date for the sampling.
     :type start_date: str
     :param end_date: An end date for the sampling.
@@ -349,9 +355,9 @@ async def sample(
     :param custom_search_value: Value for custom search filter key, defaults to None
     :type custom_search_value: Optional[str], optional
     :param inflate: To "in-memory" (works for <5k calls) vs "files", defaults to None
-    :type inflate: Optional[str], optional
-    :return: A list of calls if inflate set to "in-memory" or a directory path if inflate is set to "files".
-    :rtype: Union[str, List[dict]]
+    :type save: Optional[str], optional
+    :return: A directory path if save is set to "files" otherwise path to a file.
+    :rtype: str
     """
     params = {
         const.START_DATE: start_date,
@@ -378,14 +384,15 @@ async def sample(
 
     pages_to_read = get_pages_to_read(current_page, total_pages, call_quantity)
 
-    if isinstance(inflate, str) and inflate:
-        inflate_option = inflate
+    if isinstance(save, str) and save:
+        inflate_option = save
     else:
         inflate_option = (
             const.FILES if call_quantity >= const.MEMORY_LIMIT else const.IN_MEMORY
         )
 
     if inflate_option == const.FILES:
-        return await inflate_calls_in_files(url, jwt, params, pages_to_read)
+        return await inflate_calls_in_files(url, token, params, pages_to_read)
     else:
-        return await inflate_calls_in_memory(url, jwt, params, pages_to_read)
+        calls = await inflate_calls_in_memory(url, token, params, pages_to_read)
+        return save_call(tempfile.mkdtemp(), calls)
