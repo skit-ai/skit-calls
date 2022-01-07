@@ -368,7 +368,11 @@ async def sample(
         params[const.CUSTOM_SEARCH_KEY] = custom_search_key
         params[const.CUSTOM_SEARCH_VALUE] = custom_search_value
 
-    metadata = await get_metadata(url, jwt, params)
+    metadata = await get_metadata(url, token, params)
+
+    if metadata.get(const.TOTAL_ITEMS) == 0:
+        raise ValueError(f"No calls found for {params=}")
+
     current_page = metadata.get(const.PAGE, 1)
     total_pages = metadata.get(const.TOTAL_PAGES, 2)
 
