@@ -70,7 +70,7 @@ def build_cli():
         help="The url of the skit.ai's api gateway.",
     )
     parser.add_argument(
-        "--token", type=str, help="The auth token for an organization."
+        "--token", type=str, help="The auth token from https://github.com/skit-ai/skit-auth."
     )
     parser.add_argument(
         "--start-date",
