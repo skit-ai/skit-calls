@@ -7,7 +7,7 @@ from datetime import datetime
 from typing import Dict, Iterable, List, Optional, Union
 
 import aiohttp
-import yaml
+import pandas as pd
 
 from skit_calls import constants as const
 
@@ -278,7 +278,7 @@ async def inflate_calls_in_memory(
 
 def save_call(dir: str, turns: Iterable[dict]) -> str:
     """
-    Save a call in yaml files.
+    Save a call in csv files.
 
     :param dir: A directory to save the call.
     :type dir: str
@@ -287,10 +287,10 @@ def save_call(dir: str, turns: Iterable[dict]) -> str:
     :return: Path to the saved call.
     :rtype: str
     """
-    _, temp_file = tempfile.mkstemp(dir=dir, suffix=".yaml")
-    with open(temp_file, mode="w", encoding="utf-8") as file_handle:
-        yaml.safe_dump(turns, file_handle, allow_unicode=True)
-    return temp_file
+    _, file_path = tempfile.mkstemp(dir=dir, suffix=".csv")
+    df = pd.DataFrame(turns)
+    df.to_csv(file_path, index=False)
+    return file_path
 
 
 async def inflate_calls_in_files(
