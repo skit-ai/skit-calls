@@ -122,11 +122,13 @@ def build_cli():
     parser.add_argument(
         "--resolved", action="store_true", help="Search only resolved calls."
     )
-    parser.add_argument(
-        "--key", help="Search custom fields using the `custom_search_key` var."
+    custom_search_command = parser.add_subparsers(dest="commands")
+    custom_search_parser = custom_search_command.add_parser("custom-search", help="Calls API custom search options.")
+    custom_search_parser.add_argument(
+        "--key", help="Search custom fields using the `custom_search_key` var.", required=True
     )
-    parser.add_argument(
-        "--value", help="Search custom fields using the `custom_search_value` var."
+    custom_search_parser.add_argument(
+        "--value", help="Search custom fields using the `custom_search_value` var.", required=True
     )
     parser.add_argument(
         "--save",
