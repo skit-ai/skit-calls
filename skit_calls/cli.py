@@ -64,6 +64,18 @@ def process_date_filters(start_date: datetime, end_date: datetime, timezone: str
 def build_cli():
     parser = argparse.ArgumentParser(description=const.DESCRIPTION)
     parser.add_argument(
+        "--start-date",
+        type=to_datetime,
+        required=True,
+        help="Search calls made after the given date (YYYY-MM-DD).",
+    )
+    parser.add_argument(
+        "--lang",
+        type=str,
+        help="Search calls made in the given language.",
+        required=True,
+    )
+    parser.add_argument(
         "--url",
         type=str,
         default=const.DEFAULT_API_GATEWAY_URL,
@@ -71,12 +83,6 @@ def build_cli():
     )
     parser.add_argument(
         "--token", type=str, help="The auth token from https://github.com/skit-ai/skit-auth."
-    )
-    parser.add_argument(
-        "--start-date",
-        type=to_datetime,
-        required=True,
-        help="Search calls made after the given date (YYYY-MM-DD).",
     )
     parser.add_argument(
         "--end-date",
@@ -89,12 +95,6 @@ def build_cli():
         type=str,
         help="The timezone to use for the start and end dates.",
         default=const.DEFAULT_TIMEZONE,
-    )
-    parser.add_argument(
-        "--lang",
-        type=str,
-        help="Search calls made in the given language.",
-        required=True,
     )
     parser.add_argument(
         "--call-quantity",
