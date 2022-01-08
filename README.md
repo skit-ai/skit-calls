@@ -207,13 +207,13 @@ skit-calls --start-date=2022-01-01 --end-date=2022-01-05 --lang=hi --token="ajso
 ... or we can pipe the auth command to skit-calls.
 
 ```shell
-skit-auth --email iam@skit.ai --password "*******" --org-id 2 | skit-calls --start-date=2022-01-01 --end-date=2022-01-05 --lang=hi
+skit-auth --email iam@skit.ai --password --org-id 2 | skit-calls --start-date=2022-01-01 --end-date=2022-01-05 --lang=hi
 ```
 
 and an example with custom search:
 
 ```shell
-skit-auth --email iam@skit.ai --password "*******" --org-id 2 | skit-calls \
+skit-auth --email iam@skit.ai --password --org-id 2 | skit-calls \
     --start-date=2022-01-01 \
     --end-date=2022-01-05 \
     --lang=hi \
