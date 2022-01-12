@@ -59,13 +59,14 @@ TURNS = "turns"
 CONVERSATIONS = "conversations"
 PREDICTION = "prediction"
 METADATA = "metadata"
+DEBUG_METADATA = "debug_metadata"
 CREATED_AT = "created_at"
 UPDATED_AT = "updated_at"
 # ---------------------------------------------------------
 
 # ------------------------- cli -----------------------------------
 DESCRIPTION = """
-Skit.ai's calls library.
+Skit.ai's calls library {version}.
 
 We provide means to sample calls and conversations from a 
 specified environment.
