@@ -5,6 +5,7 @@ import asyncio
 from typing import Tuple
 from datetime import datetime
 
+import toml
 import pytz
 
 from skit_calls import calls
@@ -61,8 +62,16 @@ def process_date_filters(start_date: datetime, end_date: datetime, timezone: str
     return start_date, end_date
 
 
+def get_version():
+    project_toml = os.path.abspath(os.path.join(os.path.dirname( __file__ ), '..', 'pyproject.toml'))
+    with open(project_toml, 'r') as handle:
+        project_metadata = toml.load(handle)
+    return project_metadata["tool"]["poetry"]["version"]
+
+
 def build_cli():
-    parser = argparse.ArgumentParser(description=const.DESCRIPTION)
+    version = get_version()
+    parser = argparse.ArgumentParser(description=const.DESCRIPTION.format(version={version}))
     parser.add_argument(
         "--start-date",
         type=to_datetime,
@@ -174,8 +183,8 @@ def main() -> None:
         ignore_callers=args.ignore_callers,
         reported=args.reported,
         resolved=args.resolved,
-        custom_search_key=args.key,
-        custom_search_value=args.value,
+        custom_search_key=args.key if args.commands == "custom-search" else None,
+        custom_search_value=args.value if args.commands == "custom-search" else None,
         save=args.save,
     ))
 
