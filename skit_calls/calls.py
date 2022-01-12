@@ -266,7 +266,7 @@ async def inflate_calls_in_files(
     ) as session:
         for page in pages_to_read:
             turns = await get(
-                session, const.ROUTE__CALL, params, page=page, inflate=False
+                session, const.ROUTE__CALL, params, page=page, inflate=True
             )
             save_call(temp_dir, turns)
     return temp_dir
@@ -337,7 +337,7 @@ async def sample(
     metadata = await get_metadata(url, token, params)
 
     if metadata.get(const.TOTAL_ITEMS) == 0:
-        raise ValueError(f"No calls found for {params=}")
+        raise ValueError(f"No calls found for {params}")
 
     current_page = metadata.get(const.PAGE, 1)
     total_pages = metadata.get(const.TOTAL_PAGES, 2)
