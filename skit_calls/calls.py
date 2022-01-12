@@ -105,28 +105,6 @@ def get_pages_to_read(
     )
 
 
-def to_isoformat(date_string: str) -> str:
-    """
-    Convert a date string to ISO format.
-
-    :param date_string: A date string.
-    :type date_string: str
-    :raises ValueError: If the date string is not in ISO format and we fail to convert as well.
-    :return: The date string in ISO format.
-    :rtype: str
-    """
-    if not isinstance(date_string, str):
-        return date_string
-    try:
-        return datetime.fromisoformat(date_string).isoformat()
-    except ValueError as e:
-        if isinstance(date_string, str):
-            return datetime.strptime(
-                date_string, "%Y-%m-%d %H:%M:%S.%f %z %Z"
-            ).isoformat()
-        raise ValueError from e
-
-
 async def inflate_call(
     session: aiohttp.ClientSession, calls_response: dict
 ) -> List[dict]:
@@ -145,50 +123,32 @@ async def inflate_call(
     :rtype: List[dict]
     """
     calls_ = calls_response.get(const.ITEMS, [])
-    if not calls_:
-        return []
-
-    call = calls_[0]
-    conversations_response = await get(
-        session, const.ROUTE__TURN.format(call.get(const.UUID))
-    )
     turns = []
-    conversations = copy.deepcopy(conversations_response.get(const.CONVERSATIONS, []))
-
-    for conversation in conversations:
-        conversation_uuid = conversation.get(const.UUID)
-
-        if not conversation_uuid:
-            continue
-
-        conversation[const.CONV_UUID] = conversation_uuid
-        conversation[const.CALL_UUID] = call.get(const.UUID)
-        conversation.update(**conversations_response)
-
-        if conversation.get(const.PREDICTION):
-            conversation[const.PREDICTION] = json.loads(
-                conversation.get(const.PREDICTION)
-            )
-
-        if conversation.get(const.METADATA):
-            conversation[const.METADATA] = json.loads(conversation.get(const.METADATA))
-
-        conversation[const.CREATED_AT] = to_isoformat(
-            conversation.get(const.CREATED_AT)
+    for call in calls_:
+        conversations_response = await get(
+            session, const.ROUTE__TURN.format(call.get(const.UUID))
         )
-        conversation[const.UPDATED_AT] = to_isoformat(
-            conversation.get(const.UPDATED_AT)
-        )
+        conversations = copy.deepcopy(conversations_response.get(const.CONVERSATIONS, []))
 
-        # conversation and call both are referenced by 'uuid'
-        # so we created separate keys to identify them in this aggregated dataset.
-        # and remove the uuid key to avoid confusion.
-        del conversation[const.UUID]
+        for conversation in conversations:
+            conversation_uuid = conversation.get(const.UUID)
 
-        # We have aggregated conversations (moved up) with the call data, so we don't need
-        # the key containing conversations anymore.
-        del conversation[const.CONVERSATIONS]
-        turns.append(conversation)
+            if not conversation_uuid:
+                continue
+
+            conversation[const.CONV_UUID] = conversation_uuid
+            conversation[const.CALL_UUID] = call.get(const.UUID)
+            conversation.update(**conversations_response)
+
+            # conversation and call both are referenced by 'uuid'
+            # so we created separate keys to identify them in this aggregated dataset.
+            # and remove the uuid key to avoid confusion.
+            del conversation[const.UUID]
+
+            # We have aggregated conversations (moved up) with the call data, so we don't need
+            # the key containing conversations anymore.
+            del conversation[const.CONVERSATIONS]
+            turns.append(conversation)
     return turns
 
 
