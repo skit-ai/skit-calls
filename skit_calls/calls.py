@@ -3,11 +3,12 @@ import copy
 import json
 import random
 import tempfile
-from datetime import datetime
-from typing import Dict, Iterable, List, Optional, Union
+from typing import Any, Dict, Iterable, List, Optional
 
 import aiohttp
+from tqdm import tqdm
 import pandas as pd
+from loguru import logger
 
 from skit_calls import constants as const
 
@@ -240,7 +241,7 @@ async def inflate_calls_in_memory(
         return [turn for response in responses for turn in response.get(const.ITEMS)]
 
 
-def save_call(dir: str, turns: Iterable[dict]) -> str:
+def save_call(dir: str, turns: Iterable[dict], breadcrumbs: Optional[Iterable[str]] = None) -> str:
     """
     Save a call in csv files.
 
@@ -251,7 +252,15 @@ def save_call(dir: str, turns: Iterable[dict]) -> str:
     :return: Path to the saved call.
     :rtype: str
     """
-    _, file_path = tempfile.mkstemp(dir=dir, suffix=".csv")
+    if not breadcrumbs:
+        _, file_path = tempfile.mkstemp(dir=dir, suffix=".csv")
+    else:
+        _, file_path = tempfile.mkstemp(dir=dir, prefix="-".join(map(str, breadcrumbs)), suffix=".csv")
+
+    for turn in turns:
+        for key, value in turn.items():
+            if isinstance(value, list) or isinstance(value, dict):
+                turn[key] = json.dumps(value, ensure_ascii=False)
     df = pd.DataFrame(turns)
     df.to_csv(file_path, index=False)
     return file_path
@@ -268,7 +277,7 @@ async def inflate_calls_in_files(
             turns = await get(
                 session, const.ROUTE__CALL, params, page=page, inflate=True
             )
-            save_call(temp_dir, turns)
+            save_call(temp_dir, turns, breadcrumbs=params.values())
     return temp_dir
 
 
@@ -334,7 +343,11 @@ async def sample(
         params[const.CUSTOM_SEARCH_KEY] = custom_search_key
         params[const.CUSTOM_SEARCH_VALUE] = custom_search_value
 
+    logger.debug(f"Sampling calls using:\n {params=}")
+
     metadata = await get_metadata(url, token, params)
+
+    logger.debug(f"metadata={metadata}")
 
     if metadata.get(const.TOTAL_ITEMS) == 0:
         raise ValueError(f"No calls found for {params}")
@@ -343,6 +356,8 @@ async def sample(
     total_pages = metadata.get(const.TOTAL_PAGES, 2)
 
     pages_to_read = get_pages_to_read(current_page, total_pages, call_quantity)
+
+    logger.debug(f"{pages_to_read=}")
 
     if isinstance(save, str) and save:
         inflate_option = save
@@ -355,4 +370,4 @@ async def sample(
         return await inflate_calls_in_files(url, token, params, pages_to_read)
     else:
         calls = await inflate_calls_in_memory(url, token, params, pages_to_read)
-        return save_call(tempfile.mkdtemp(), calls)
+        return save_call(tempfile.mkdtemp(), calls, breadcrumbs=params.values())
