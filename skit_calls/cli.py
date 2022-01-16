@@ -7,8 +7,9 @@ from datetime import datetime
 
 import toml
 import pytz
+from loguru import logger
 
-from skit_calls import calls
+from skit_calls import calls, utils
 from skit_calls import constants as const
 
 
@@ -72,6 +73,7 @@ def get_version():
 def build_cli():
     version = get_version()
     parser = argparse.ArgumentParser(description=const.DESCRIPTION.format(version={version}))
+    parser.add_argument("-v", "--verbose", action="count", default=0, help="Increase verbosity")
     parser.add_argument(
         "--start-date",
         type=to_datetime,
@@ -91,7 +93,7 @@ def build_cli():
         help="The url of the skit.ai's api gateway.",
     )
     parser.add_argument(
-        "--token", type=str, help="The auth token from https://github.com/skit-ai/skit-auth."
+        "--token", type=str, help="The auth token from https://github.com/skit-ai/skit-auth.", default=utils.read_session()
     )
     parser.add_argument(
         "--end-date",
@@ -163,6 +165,7 @@ def main() -> None:
     """
     cli = build_cli()
     args = cli.parse_args()
+    utils.configure_logger(args.verbose)
     validate_date_ranges(args.start_date, args.end_date)
     args.start_date, args.end_date = process_date_filters(args.start_date, args.end_date)
     if args.token is None:
@@ -187,5 +190,5 @@ def main() -> None:
         custom_search_value=args.value if args.commands == "custom-search" else None,
         save=args.save,
     ))
-
+    logger.info(f"Data is saved in {data_path}")
     print(data_path)
