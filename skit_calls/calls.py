@@ -6,9 +6,9 @@ import tempfile
 from typing import Any, Dict, Iterable, List, Optional
 
 import aiohttp
-from tqdm import tqdm
 import pandas as pd
 from loguru import logger
+from tqdm import tqdm
 
 from skit_calls import constants as const
 
@@ -129,7 +129,9 @@ async def inflate_call(
         conversations_response = await get(
             session, const.ROUTE__TURN.format(call.get(const.UUID))
         )
-        conversations = copy.deepcopy(conversations_response.get(const.CONVERSATIONS, []))
+        conversations = copy.deepcopy(
+            conversations_response.get(const.CONVERSATIONS, [])
+        )
 
         for conversation in conversations:
             conversation_uuid = conversation.get(const.UUID)
@@ -241,7 +243,9 @@ async def inflate_calls_in_memory(
         return [turn for response in responses for turn in response.get(const.ITEMS)]
 
 
-def save_call(dir: str, turns: Iterable[dict], breadcrumbs: Optional[Iterable[str]] = None) -> str:
+def save_call(
+    dir: str, turns: Iterable[dict], breadcrumbs: Optional[Iterable[str]] = None
+) -> str:
     """
     Save a call in csv files.
 
@@ -255,7 +259,9 @@ def save_call(dir: str, turns: Iterable[dict], breadcrumbs: Optional[Iterable[st
     if not breadcrumbs:
         _, file_path = tempfile.mkstemp(dir=dir, suffix=".csv")
     else:
-        _, file_path = tempfile.mkstemp(dir=dir, prefix="-".join(map(str, breadcrumbs)), suffix=".csv")
+        _, file_path = tempfile.mkstemp(
+            dir=dir, prefix="-".join(map(str, breadcrumbs)), suffix=".csv"
+        )
 
     for turn in turns:
         for key, value in turn.items():

@@ -1,16 +1,17 @@
-import os
-import sys
 import argparse
 import asyncio
-from typing import Tuple
+import os
+import sys
 from datetime import datetime
+from typing import Tuple
 
-import toml
 import pytz
+import toml
 from loguru import logger
 
-from skit_calls import calls, utils
+from skit_calls import calls
 from skit_calls import constants as const
+from skit_calls import utils
 
 
 def to_datetime(date_string: str) -> datetime:
@@ -40,12 +41,12 @@ def validate_date_ranges(start_date: datetime, end_date: datetime) -> None:
     if start_date > end_date:
         start_date = start_date.strftime("%Y-%m-%d")
         end_date = end_date.strftime("%Y-%m-%d")
-        raise ValueError(
-            f"{start_date=} shouldn't be later than {end_date=}."
-        )
+        raise ValueError(f"{start_date=} shouldn't be later than {end_date=}.")
 
 
-def process_date_filters(start_date: datetime, end_date: datetime, timezone: str = const.DEFAULT_TIMEZONE) -> Tuple[str, str]:
+def process_date_filters(
+    start_date: datetime, end_date: datetime, timezone: str = const.DEFAULT_TIMEZONE
+) -> Tuple[str, str]:
     """
     Process the date filters.
 
@@ -59,21 +60,29 @@ def process_date_filters(start_date: datetime, end_date: datetime, timezone: str
     :type timezone: str
     """
     start_date = start_date.replace(tzinfo=pytz.timezone(timezone)).isoformat()
-    end_date = end_date.replace(hour=23, minute=59, tzinfo=pytz.timezone(timezone)).isoformat()
+    end_date = end_date.replace(
+        hour=23, minute=59, tzinfo=pytz.timezone(timezone)
+    ).isoformat()
     return start_date, end_date
 
 
 def get_version():
-    project_toml = os.path.abspath(os.path.join(os.path.dirname( __file__ ), '..', 'pyproject.toml'))
-    with open(project_toml, 'r') as handle:
+    project_toml = os.path.abspath(
+        os.path.join(os.path.dirname(__file__), "..", "pyproject.toml")
+    )
+    with open(project_toml, "r") as handle:
         project_metadata = toml.load(handle)
     return project_metadata["tool"]["poetry"]["version"]
 
 
 def build_cli():
     version = get_version()
-    parser = argparse.ArgumentParser(description=const.DESCRIPTION.format(version={version}))
-    parser.add_argument("-v", "--verbose", action="count", default=0, help="Increase verbosity")
+    parser = argparse.ArgumentParser(
+        description=const.DESCRIPTION.format(version={version})
+    )
+    parser.add_argument(
+        "-v", "--verbose", action="count", default=0, help="Increase verbosity"
+    )
     parser.add_argument(
         "--start-date",
         type=to_datetime,
@@ -93,7 +102,10 @@ def build_cli():
         help="The url of the skit.ai's api gateway.",
     )
     parser.add_argument(
-        "--token", type=str, help="The auth token from https://github.com/skit-ai/skit-auth.", default=utils.read_session()
+        "--token",
+        type=str,
+        help="The auth token from https://github.com/skit-ai/skit-auth.",
+        default=utils.read_session(),
     )
     parser.add_argument(
         "--end-date",
@@ -134,12 +146,18 @@ def build_cli():
         "--resolved", action="store_true", help="Search only resolved calls."
     )
     custom_search_command = parser.add_subparsers(dest="commands")
-    custom_search_parser = custom_search_command.add_parser("custom-search", help="Calls API custom search options.")
-    custom_search_parser.add_argument(
-        "--key", help="Search custom fields using the `custom_search_key` var.", required=True
+    custom_search_parser = custom_search_command.add_parser(
+        "custom-search", help="Calls API custom search options."
     )
     custom_search_parser.add_argument(
-        "--value", help="Search custom fields using the `custom_search_value` var.", required=True
+        "--key",
+        help="Search custom fields using the `custom_search_key` var.",
+        required=True,
+    )
+    custom_search_parser.add_argument(
+        "--value",
+        help="Search custom fields using the `custom_search_value` var.",
+        required=True,
     )
     parser.add_argument(
         "--save",
@@ -167,28 +185,36 @@ def main() -> None:
     args = cli.parse_args()
     utils.configure_logger(args.verbose)
     validate_date_ranges(args.start_date, args.end_date)
-    args.start_date, args.end_date = process_date_filters(args.start_date, args.end_date)
+    args.start_date, args.end_date = process_date_filters(
+        args.start_date, args.end_date
+    )
     if args.token is None:
         is_pipe = not os.isatty(sys.stdin.fileno())
         if is_pipe:
             args.token = sys.stdin.readline().strip()
         else:
-            raise argparse.ArgumentTypeError("Expected to receive --token=<token> or its valued piped in.")
+            raise argparse.ArgumentTypeError(
+                "Expected to receive --token=<token> or its valued piped in."
+            )
 
-    data_path = asyncio.run(calls.sample(
-        args.url,
-        args.token,
-        args.start_date,
-        args.end_date,
-        args.lang,
-        call_quantity=args.call_quantity,
-        call_type=args.call_type,
-        ignore_callers=args.ignore_callers,
-        reported=args.reported,
-        resolved=args.resolved,
-        custom_search_key=args.key if args.commands == "custom-search" else None,
-        custom_search_value=args.value if args.commands == "custom-search" else None,
-        save=args.save,
-    ))
+    data_path = asyncio.run(
+        calls.sample(
+            args.url,
+            args.token,
+            args.start_date,
+            args.end_date,
+            args.lang,
+            call_quantity=args.call_quantity,
+            call_type=args.call_type,
+            ignore_callers=args.ignore_callers,
+            reported=args.reported,
+            resolved=args.resolved,
+            custom_search_key=args.key if args.commands == "custom-search" else None,
+            custom_search_value=args.value
+            if args.commands == "custom-search"
+            else None,
+            save=args.save,
+        )
+    )
     logger.info(f"Data is saved in {data_path}")
     print(data_path)
