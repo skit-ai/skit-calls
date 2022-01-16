@@ -219,3 +219,6 @@ skit-auth --email iam@skit.ai --password --org-id 2 | skit-calls \
     --lang=hi \
     custom-search --key=usecase --value=some_usecase
 ```
+
+We read the token from `~/.skit/token` if it exists. So one can avoid the pipe or passing the long token as an argument if the 
+skit-auth command has already been run once. **Do note, the organization where the calls are fetched from, comes from the token.**
