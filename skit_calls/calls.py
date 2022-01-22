@@ -275,15 +275,29 @@ def save_call(
 async def inflate_calls_in_files(
     url: str, token: str, params: dict, pages_to_read: Iterable[int]
 ) -> str:
+    """
+    Inflate calls in disk files.
+
+    :param url: The endpoint for fetching call and related data.
+    :type url: str
+    :param token: An auth token.
+    :type token: str
+    :param params: API query params.
+    :type params: dict
+    :param pages_to_read: A list of pages to read calls from (paginated API).
+    :type pages_to_read: Iterable[int]
+    :return: The path to the directory where the inflated calls are saved.
+    :rtype: str
+    """
     temp_dir = tempfile.mkdtemp()
     async with aiohttp.ClientSession(
         url, headers={**get_auth_header(token)}
     ) as session:
         for page in pages_to_read:
-            turns = await get(
+            turn = await get(
                 session, const.ROUTE__CALL, params, page=page, inflate=True
-            )
-            save_call(temp_dir, turns, breadcrumbs=params.values())
+            ) # turn will be a dict
+            save_call(temp_dir, [turn], breadcrumbs=params.values())
     return temp_dir
 
 
