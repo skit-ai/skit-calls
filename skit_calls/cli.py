@@ -168,21 +168,7 @@ def build_cli():
     )
     return parser
 
-
-def main() -> None:
-    """
-    Main entry point for the CLI.
-
-    - We try to read token from the pipes if not passed as an arguments.
-    - Process the request for sampling calls.
-    - Collect the results:
-        - In a single file if save is set to IN_MEMORY.
-            - Print the file path to stdout.
-        - In multiple files if save is set to FILES.
-            - Print the directory path to stdout.
-    """
-    cli = build_cli()
-    args = cli.parse_args()
+def cmd_to_str(args: argparse.Namespace) -> str:
     utils.configure_logger(args.verbose)
     validate_date_ranges(args.start_date, args.end_date)
     args.start_date, args.end_date = process_date_filters(
@@ -217,4 +203,22 @@ def main() -> None:
         )
     )
     logger.info(f"Data is saved in {data_path}")
+    return data_path
+
+
+def main() -> None:
+    """
+    Main entry point for the CLI.
+
+    - We try to read token from the pipes if not passed as an arguments.
+    - Process the request for sampling calls.
+    - Collect the results:
+        - In a single file if save is set to IN_MEMORY.
+            - Print the file path to stdout.
+        - In multiple files if save is set to FILES.
+            - Print the directory path to stdout.
+    """
+    cli = build_cli()
+    args = cli.parse_args()
+    data_path = cmd_to_str(args)
     print(data_path)
