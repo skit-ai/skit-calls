@@ -168,6 +168,32 @@ def build_cli():
     )
     return parser
 
+
+def get_calls_df_path(url, token, start_date, end_date, lang,
+    call_type=const.LIVE, call_quantity=const.DEFAULT_CALL_QUANTITY,
+    ignore_callers=const.DEFAULT_IGNORE_CALLERS_LIST, 
+    reported=False, resolved=False, key=None, value=None, save=const.IN_MEMORY):
+    data_path = asyncio.run(
+        calls.sample(
+            url,
+            token,
+            start_date,
+            end_date,
+            lang,
+            call_quantity=call_quantity,
+            call_type=call_type,
+            ignore_callers=ignore_callers,
+            reported=reported,
+            resolved=resolved,
+            custom_search_key=key,
+            custom_search_value=value,
+            save=save,
+        )
+    )
+    logger.info(f"Data is saved in {data_path}")
+    return data_path
+
+
 def cmd_to_str(args: argparse.Namespace) -> str:
     utils.configure_logger(args.verbose)
     validate_date_ranges(args.start_date, args.end_date)
@@ -182,28 +208,21 @@ def cmd_to_str(args: argparse.Namespace) -> str:
             raise argparse.ArgumentTypeError(
                 "Expected to receive --token=<token> or its valued piped in."
             )
-
-    data_path = asyncio.run(
-        calls.sample(
-            args.url,
-            args.token,
-            args.start_date,
-            args.end_date,
-            args.lang,
-            call_quantity=args.call_quantity,
-            call_type=args.call_type,
-            ignore_callers=args.ignore_callers,
-            reported=args.reported,
-            resolved=args.resolved,
-            custom_search_key=args.key if args.commands == "custom-search" else None,
-            custom_search_value=args.value
-            if args.commands == "custom-search"
-            else None,
-            save=args.save,
-        )
+    return get_calls_df_path(
+        args.url,
+        args.token,
+        args.start_date,
+        args.end_date,
+        args.lang,
+        call_quantity=args.call_quantity,
+        call_type=args.call_type,
+        ignore_callers=args.ignore_callers,
+        reported=args.reported,
+        resolved=args.resolved,
+        custom_search_key=args.key, 
+        custom_search_value=args.value, 
+        save=args.save
     )
-    logger.info(f"Data is saved in {data_path}")
-    return data_path
 
 
 def main() -> None:
