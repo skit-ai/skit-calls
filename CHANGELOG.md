@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## 0.1.5
+
+- [x] Refactor: no noticable change on the cli.
+
 ## 0.1.4
 
 - [x] Refactor: no noticable change on the cli.
