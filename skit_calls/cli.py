@@ -9,7 +9,7 @@ import pytz
 import toml
 from loguru import logger
 
-from skit_calls import calls
+from skit_calls import calls, __version__
 from skit_calls import constants as const
 from skit_calls import utils
 
@@ -67,12 +67,7 @@ def process_date_filters(
 
 
 def get_version():
-    project_toml = os.path.abspath(
-        os.path.join(os.path.dirname(__file__), "..", "pyproject.toml")
-    )
-    with open(project_toml, "r") as handle:
-        project_metadata = toml.load(handle)
-    return project_metadata["tool"]["poetry"]["version"]
+    return __version__
 
 
 def build_cli():
