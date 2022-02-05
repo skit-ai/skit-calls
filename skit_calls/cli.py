@@ -68,7 +68,7 @@ def process_date_filters(
 
 def get_version():
     project_toml = os.path.abspath(
-        os.path.join(os.path.dirname(__file__), "..", "pyproject.toml")
+        os.path.join(os.path.dirname(__file__), "pyproject.toml")
     )
     with open(project_toml, "r") as handle:
         project_metadata = toml.load(handle)
