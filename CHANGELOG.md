@@ -1,5 +1,10 @@
 # CHANGELOG
 
+## 0.2.0
+
+- [x] Update: Move away from the api and use raw sql.
+- [x] Perf: ~100k calls in 7 minutes. This is very slow but orders of magnitude faster than the previous of 10k calls in 10minutes.
+
 ## 0.1.6
 
 - [x] Fix: Version read from package instead of toml.
