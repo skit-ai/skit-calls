@@ -1,15 +1,13 @@
 import argparse
-import asyncio
+import tempfile
 import os
 import sys
 from datetime import datetime
 from typing import Tuple
 
 import pytz
-import toml
-from loguru import logger
 
-from skit_calls import calls, __version__
+from skit_calls import __version__, calls
 from skit_calls import constants as const
 from skit_calls import utils
 
@@ -76,13 +74,7 @@ def build_cli():
         description=const.DESCRIPTION.format(version={version})
     )
     parser.add_argument(
-        "-v", "--verbose", action="count", default=0, help="Increase verbosity"
-    )
-    parser.add_argument(
-        "--start-date",
-        type=to_datetime,
-        required=True,
-        help="Search calls made after the given date (YYYY-MM-DD).",
+        "-v", "--verbose", action="count", default=3, help="Increase verbosity"
     )
     parser.add_argument(
         "--lang",
@@ -91,16 +83,15 @@ def build_cli():
         required=True,
     )
     parser.add_argument(
-        "--url",
+        "--org-id",
         type=str,
-        default=const.DEFAULT_API_GATEWAY_URL,
-        help="The url of the skit.ai's api gateway.",
+        help="The org for which you need the data.",
     )
     parser.add_argument(
-        "--token",
-        type=str,
-        help="The auth token from https://github.com/skit-ai/skit-auth.",
-        default=utils.read_session(),
+        "--start-date",
+        type=to_datetime,
+        required=True,
+        help="Search calls made after the given date (YYYY-MM-DD).",
     )
     parser.add_argument(
         "--end-date",
@@ -123,9 +114,9 @@ def build_cli():
     parser.add_argument(
         "--call-type",
         type=str,
-        help='The type of call to filter. One of ("live", "subtesting")',
-        default=const.LIVE,
-        choices=[const.LIVE, const.SUBTESTING],
+        help='The type of call to filter.',
+        default=const.INBOUND,
+        choices=[const.INBOUND, const.OUTBOUND, const.CALL_TEST],
     )
     parser.add_argument(
         "--ignore-callers",
@@ -138,55 +129,24 @@ def build_cli():
         "--reported", action="store_true", help="Search only reported calls."
     )
     parser.add_argument(
-        "--resolved", action="store_true", help="Search only resolved calls."
-    )
-    custom_search_command = parser.add_subparsers(dest="commands")
-    custom_search_parser = custom_search_command.add_parser(
-        "custom-search", help="Calls API custom search options."
-    )
-    custom_search_parser.add_argument(
-        "--key",
-        help="Search custom fields using the `custom_search_key` var.",
-        required=True,
-    )
-    custom_search_parser.add_argument(
-        "--value",
-        help="Search custom fields using the `custom_search_value` var.",
-        required=True,
+        "--use-case", help="Filter calls by use-case."
     )
     parser.add_argument(
-        "--save",
-        type=str,
-        help="Choose to inflate calls in memory or in files. Recommended to use files if data points are over 1M.",
-        choices=[const.FILES, const.IN_MEMORY],
-        default=const.IN_MEMORY,
+        "--flow-name", help="Filter calls by flow-name."
+    )
+    parser.add_argument(
+        "--audio-duration", type=float, help="Filter calls with greater than audio duration."
+    )
+    parser.add_argument(
+        "--asr-provider", help="Filter calls served via a specific ASR provider."
+    )
+    parser.add_argument(
+        "--on-disk",
+        action="store_true",
+        help="Each record is written directly to disk. Highly recommended for large queries.",
+        default=True,
     )
     return parser
-
-
-def get_calls_df_path(url, token, start_date, end_date, lang,
-    call_type=const.LIVE, call_quantity=const.DEFAULT_CALL_QUANTITY,
-    ignore_callers=const.DEFAULT_IGNORE_CALLERS_LIST, 
-    reported=False, resolved=False, key=None, value=None, save=const.IN_MEMORY):
-    data_path = asyncio.run(
-        calls.sample(
-            url,
-            token,
-            start_date,
-            end_date,
-            lang,
-            call_quantity=call_quantity,
-            call_type=call_type,
-            ignore_callers=ignore_callers,
-            reported=reported,
-            resolved=resolved,
-            custom_search_key=key,
-            custom_search_value=value,
-            save=save,
-        )
-    )
-    logger.info(f"Data is saved in {data_path}")
-    return data_path
 
 
 def cmd_to_str(args: argparse.Namespace) -> str:
@@ -203,9 +163,8 @@ def cmd_to_str(args: argparse.Namespace) -> str:
             raise argparse.ArgumentTypeError(
                 "Expected to receive --token=<token> or its valued piped in."
             )
-    return get_calls_df_path(
-        args.url,
-        args.token,
+    maybe_df = calls.sample(
+        args.org_id,
         args.start_date,
         args.end_date,
         args.lang,
@@ -213,11 +172,18 @@ def cmd_to_str(args: argparse.Namespace) -> str:
         call_type=args.call_type,
         ignore_callers=args.ignore_callers,
         reported=args.reported,
-        resolved=args.resolved,
-        custom_search_key=args.key, 
-        custom_search_value=args.value, 
-        save=args.save
+        use_case=args.use_case,
+        flow_name=args.flow_name,
+        audio_duration=args.audio_duration,
+        asr_provider=args.asr_provider,
+        on_disk=args.on_disk,
     )
+    if args.on_disk:
+        print(maybe_df)
+    else:
+        _, file_path = tempfile.mkstemp(suffix=const.CSV_FILE)
+        maybe_df.to_csv(file_path, index=False)
+        print(file_path)
 
 
 def main() -> None:
@@ -232,7 +198,4 @@ def main() -> None:
         - In multiple files if save is set to FILES.
             - Print the directory path to stdout.
     """
-    cli = build_cli()
-    args = cli.parse_args()
-    data_path = cmd_to_str(args)
-    print(data_path)
+    cmd_to_str(build_cli().parse_args())

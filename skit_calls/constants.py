@@ -18,12 +18,14 @@ a_dict[const.KEY]
 ```
 In the latter, a mature IDE will suggest the KEY constant, reducing time and ensuring consistency.
 """
+ID = "id"
 AUTHORIZATION = "authorization"
 ROUTE__CALL = "/call_report/calls/"
 ROUTE__TURN = "/call_report/calls/{}/"
+ROUTE__EXPORT_CALL = "/call_report/export/calls/"
 LIVE = "live"
 SUBTESTING = "subtesting"
-
+FILE_URL = "file_url"
 # ----------- Tagged calls are one of the following -----------
 REPORTED = "reported"
 RESOLVED = "resolved"
@@ -45,7 +47,7 @@ CUSTOM_SEARCH_KEY = "custom_search_key"
 CUSTOM_SEARCH_VALUE = "custom_search_value"
 
 # These are system generated pings and are never required
-DEFAULT_IGNORE_CALLERS_LIST = ["ev-connect", "0000000000"]
+DEFAULT_IGNORE_CALLERS_LIST = ("ev-connect", "0000000000")
 # ---------------------------------------------------------
 
 # ----------- columns in the calls+turns list -------------
@@ -75,9 +77,47 @@ Learn about this library at: https://github.com/skit-ai/skit-calls
 """.strip()
 # ------------------------------------------------------------------
 
-FILES = "files"
+ON_DISK = "on-disk"
 IN_MEMORY = "in-memory"
 MEMORY_LIMIT = 10e7
 DEFAULT_API_GATEWAY_URL = "https://apigateway.vernacular.ai"
 DEFAULT_CALL_QUANTITY = 200
 DEFAULT_TIMEZONE = "Asia/Kolkata"
+
+S3_URL_PATTERN_1 = r"https:\/\/s3\.\w{2}-(north|south|east|west)-\d{1,2}\.amazonaws\.com\/([A-Za-z0-9\-]+)\/(.+)"
+S3_URL_PATTERN_2 = r"https:\/\/([a-zA-Z\-]+)\.s3\.\w{2}-(north|south|east|west)-\d{1,2}\.amazonaws\.com\/(.+)"
+S3_OBJ_PATTERN = r"s3:\/\/([a-zA-Z0-9\-]+)\/(.+)"
+RANDOM_CALL_ID_QUERY = "RANDOM_CALL_ID_QUERY"
+RANDOM_CALL_DATA_QUERY = "RANDOM_CALL_DATA_QUERY"
+RANDOM_CALL_DATA_CURSOR = "random_call_data_cursor"
+
+# Call types
+OUTBOUND = "OUTBOUND"
+INBOUND = "INBOUND"
+CALL_TEST = "CALL_TEST"
+DB_HOST = "DB_HOST"
+DB_PORT = "DB_PORT"
+DB_USER = "DB_USER"
+DB_PASSWORD = "DB_PASSWORD"
+DB_NAME = "DB_NAME"
+EXCLUDED_NUMBERS = "excluded_numbers"
+CALL_IDS = "call_ids"
+USE_CASE = "use_case"
+FLOW_NAME = "flow_name"
+LANG = "lang"
+AUDIO_DURATION = "audio_duration"
+ASR_PROVIDER = "asr_provider"
+GRAPH = "graph"
+OUTPUT = "output"
+INTENTS = "intents"
+NAME = "name"
+SCORE = "score"
+VALUES = "values"
+SLOTS = "slots"
+TRANSCRIPT = "transcript"
+CDN_RECORDINGS_BASE_PATH = "CDN_RECORDINGS_BASE_PATH"
+WAV_FILE = ".wav"
+CSV_FILE = ".csv"
+LIMIT = "limit"
+OFFSET = "offset"
+TURNS_LIMIT = 3000
