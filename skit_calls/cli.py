@@ -155,14 +155,7 @@ def cmd_to_str(args: argparse.Namespace) -> str:
     args.start_date, args.end_date = process_date_filters(
         args.start_date, args.end_date
     )
-    if args.token is None:
-        is_pipe = not os.isatty(sys.stdin.fileno())
-        if is_pipe:
-            args.token = sys.stdin.readline().strip()
-        else:
-            raise argparse.ArgumentTypeError(
-                "Expected to receive --token=<token> or its valued piped in."
-            )
+    start = time.time()
     maybe_df = calls.sample(
         args.org_id,
         args.start_date,
