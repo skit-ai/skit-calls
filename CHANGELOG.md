@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## 0.2.1
+
+- [x] Update: queries optimized.
+
 ## 0.2.0
 
 - [x] Update: Move away from the api and use raw sql.
