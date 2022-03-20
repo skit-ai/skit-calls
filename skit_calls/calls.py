@@ -36,7 +36,7 @@ def sample(
     reported: bool = False,
     use_case: Optional[str] = None,
     flow_name: Optional[str] = None,
-    audio_duration: Optional[float] = None,
+    min_duration: Optional[float] = None,
     asr_provider: Optional[str] = None,
     on_disk: bool = True,
 ) -> str | pd.DataFrame:
@@ -92,16 +92,16 @@ def sample(
             end_date,
             limit=call_quantity,
             call_type=call_type,
+            lang=lang,
+            min_duration=min_duration,
+            use_case=use_case,
+            flow_name=flow_name,
             excluded_numbers=ignore_callers,
             reported=reported,
         )()
         random_call_data = query.gen_random_calls(
             random_call_ids,
-            lang=lang,
-            audio_duration=audio_duration,
             asr_provider=asr_provider,
-            use_case=use_case,
-            flow_name=flow_name,
         )
         if on_disk:
             return save_turns_on_disk(random_call_data)

@@ -118,7 +118,7 @@ class Turn:
     slu_latency: MaybeFloat = attr.ib(
         kw_only=True, default=None, converter=float_maybestr, repr=False
     )
-    audio_duration: MaybeFloat = attr.ib(
+    call_duration: MaybeFloat = attr.ib(
         kw_only=True,
         default=None,
         converter=float_maybestr,
@@ -152,7 +152,7 @@ class Turn:
             asr_provider=record.asr_provider,
             virtual_number=record.virtual_number,
             flow_version=record.flow_version,
-            audio_duration=record.audio_duration,
+            call_duration=record.call_duration,
         )
 
     def to_dict(self) -> Dict[str, Any]:

@@ -30,9 +30,13 @@ def gen_random_call_ids(
     limit: int = const.DEFAULT_CALL_QUANTITY,
     call_type: str = const.INBOUND,
     reported: bool = False,
+    use_case: str | None = None,
+    lang: str | None = None,
+    flow_name: str | None = None,
+    min_duration: float | None = None,
     excluded_numbers: Set[str] | None = None,
 ):
-    excluded_numbers = excluded_numbers or set()
+    excluded_numbers = set(excluded_numbers) or set()
     excluded_numbers = excluded_numbers.union(const.DEFAULT_IGNORE_CALLERS_LIST)
     reported_status = 0 if reported else None
     call_filters = {
@@ -41,7 +45,11 @@ def gen_random_call_ids(
         const.ID: id_,
         const.CALL_TYPE: call_type,
         const.RESOLVED: reported_status,
+        const.LANG: lang,
         const.EXCLUDED_NUMBERS: tuple(excluded_numbers),
+        const.MIN_AUDIO_DURATION: min_duration,
+        const.USE_CASE: use_case,
+        const.FLOW_NAME: flow_name,
     }
 
     logger.debug(f"call_filters={pformat(call_filters)} | {limit=}")
@@ -60,24 +68,20 @@ def gen_random_call_ids(
 
 def gen_random_calls(
     call_ids: Tuple[int],
-    lang: str | None = None,
-    audio_duration: float | None = None,
     asr_provider: str | None = None,
-    use_case: str | None = None,
-    flow_name: str | None = None,
     limit: int  = const.TURNS_LIMIT
 ):
+    time.sleep(1)
     query = get_query(const.RANDOM_CALL_DATA_QUERY)
     turn_filters = {
-        const.LANG: lang,
-        const.AUDIO_DURATION: audio_duration,
         const.ASR_PROVIDER: asr_provider,
-        const.USE_CASE: use_case,
-        const.FLOW_NAME: flow_name,
+        const.CONVERSATION_TYPES: (const.UCASE_INPUT,),
+        const.CONVERSATION_SUB_TYPES: (const.UCASE_AUDIO,),
     }
 
     call_id_size = len(call_ids)
     batch_size = call_id_size // limit if call_id_size % limit == 0 else call_id_size // limit + 1
+    logger.debug(f"Creating {batch_size} batches for {call_id_size} calls")
     batch_no = 0
     for i in range(0, len(call_ids), limit):
         batch = call_ids[i:i+limit]
