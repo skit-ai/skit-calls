@@ -1,7 +1,6 @@
 import argparse
 import tempfile
-import os
-import sys
+import time
 from datetime import datetime
 from typing import Tuple
 
@@ -10,6 +9,7 @@ import pytz
 from skit_calls import __version__, calls
 from skit_calls import constants as const
 from skit_calls import utils
+from loguru import logger
 
 
 def to_datetime(date_string: str) -> datetime:
@@ -74,7 +74,7 @@ def build_cli():
         description=const.DESCRIPTION.format(version={version})
     )
     parser.add_argument(
-        "-v", "--verbose", action="count", default=3, help="Increase verbosity"
+        "-v", "--verbose", action="count", default=4, help="Increase verbosity"
     )
     parser.add_argument(
         "--lang",
@@ -135,7 +135,7 @@ def build_cli():
         "--flow-name", help="Filter calls by flow-name."
     )
     parser.add_argument(
-        "--audio-duration", type=float, help="Filter calls with greater than audio duration."
+        "--min-audio-duration", type=float, help="Filter calls longer than given duration."
     )
     parser.add_argument(
         "--asr-provider", help="Filter calls served via a specific ASR provider."
@@ -167,10 +167,11 @@ def cmd_to_str(args: argparse.Namespace) -> str:
         reported=args.reported,
         use_case=args.use_case,
         flow_name=args.flow_name,
-        audio_duration=args.audio_duration,
+        min_duration=args.min_audio_duration,
         asr_provider=args.asr_provider,
         on_disk=args.on_disk,
     )
+    logger.info(f"Finished in {time.time() - start:.2f} seconds")
     if args.on_disk:
         print(maybe_df)
     else:
