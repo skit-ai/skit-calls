@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## 0.2.3
+
+- [x] Update: progress bar and query updates.
+
 ## 0.2.2
 
 - [x] Update: Downgrade pyyaml for integrations with other components.
