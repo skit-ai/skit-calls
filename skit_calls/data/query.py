@@ -1,10 +1,10 @@
 import os
 import time
-import random
 from pprint import pformat
 from typing import Any, Dict, Tuple, Set, Iterable
 
 from loguru import logger
+from tqdm import tqdm
 from psycopg2.extensions import connection as Conn
 from psycopg2.extras import NamedTupleCursor
 
@@ -50,6 +50,7 @@ def gen_random_call_ids(
         const.MIN_AUDIO_DURATION: min_duration,
         const.USE_CASE: use_case,
         const.FLOW_NAME: flow_name,
+        const.LIMIT: limit + const.MARGIN * limit
     }
 
     logger.debug(f"call_filters={pformat(call_filters)} | {limit=}")
@@ -61,8 +62,7 @@ def gen_random_call_ids(
         with conn.cursor() as cursor:
             cursor.execute(query, call_filters)
             all_ids = cursor.fetchall()
-            some_ids = random.sample(all_ids, limit) if len(all_ids) > limit else all_ids
-        return tuple(id_[0] for id_ in some_ids)
+        return tuple(id_[0] for id_ in all_ids)
     return on_connect
 
 
@@ -82,14 +82,14 @@ def gen_random_calls(
     call_id_size = len(call_ids)
     batch_size = call_id_size // limit if call_id_size % limit == 0 else call_id_size // limit + 1
     logger.debug(f"Creating {batch_size} batches for {call_id_size} calls")
-    batch_no = 0
-    for i in range(0, len(call_ids), limit):
-        batch = call_ids[i:i+limit]
-        with connect() as conn:
-            with conn.cursor(cursor_factory=NamedTupleCursor) as cursor:
-                logger.debug(f"\n[{batch_no + 1}/{batch_size}] turn_filters=\n{pformat(turn_filters)}\n for {len(batch)} call-ids.")
-                cursor.execute(query, {**turn_filters, const.CALL_IDS: batch})
-                result_set = cursor.fetchall()
-                yield from as_turns(result_set)
-                batch_no += 1
-        time.sleep(0.5)
+    i = 0
+    with tqdm(total=batch_size) as pbar:
+        for i in range(0, len(call_ids), limit):
+            batch = call_ids[i:i+limit]
+            with connect() as conn:
+                with conn.cursor(cursor_factory=NamedTupleCursor) as cursor:
+                    cursor.execute(query, {**turn_filters, const.CALL_IDS: batch})
+                    result_set = cursor.fetchall()
+                    yield from as_turns(result_set)
+                    pbar.update(1)
+            time.sleep(0.2)

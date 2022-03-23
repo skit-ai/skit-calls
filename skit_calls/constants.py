@@ -125,3 +125,4 @@ CONVERSATION_TYPES = "conversation_types"
 CONVERSATION_SUB_TYPES = "conversation_sub_types"
 UCASE_INPUT = "INPUT"
 UCASE_AUDIO = "AUDIO"
+MARGIN = 0.1
