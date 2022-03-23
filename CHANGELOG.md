@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## 0.2.2
+
+- [x] Update: Downgrade pyyaml for integrations with other components.
+
 ## 0.2.1
 
 - [x] Update: queries optimized.
