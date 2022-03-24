@@ -1,5 +1,10 @@
 # CHANGELOG
 
+
+## 0.2.4
+
+- [x] Fix: All urls are unquoted within the `Turns` model.
+
 ## 0.2.3
 
 - [x] Update: progress bar and query updates.

@@ -3,7 +3,7 @@ import json
 from collections import namedtuple
 from datetime import datetime
 from typing import Any, Dict, List, Tuple
-from urllib.parse import urljoin
+from urllib.parse import urljoin, unquote
 
 import attr
 
@@ -70,7 +70,7 @@ def print_utterance(utterances: Utterances) -> str:
 
 
 def get_call_url(*args: MaybeString):
-    return urljoin(*args)
+    return unquote(urljoin(*args))
 
 
 @attr.s(slots=True, weakref_slot=False)
