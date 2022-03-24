@@ -69,8 +69,12 @@ def print_utterance(utterances: Utterances) -> str:
     return utterances[0][0][const.TRANSCRIPT]
 
 
-def get_call_url(*args: MaybeString):
-    return unquote(urljoin(*args))
+def get_call_url(base: MaybeString, path: MaybeString, extension: MaybeString = None) -> MaybeString:
+    return urljoin(os.path.join(base, ''), unquote(path).lstrip("/")) + extension
+
+
+def get_url(base: MaybeString, path: MaybeString) -> MaybeString:
+    return urljoin(os.path.join(base, ''), unquote(path).lstrip("/"))
 
 
 @attr.s(slots=True, weakref_slot=False)
@@ -130,7 +134,7 @@ class Turn:
         intent_name, intent_score, slots = prediction2intent(record.prediction)
         entities = slots2entities(slots)
         call_url = record.call_url or get_call_url(os.environ[const.CDN_RECORDINGS_BASE_PATH], record.call_url_id, const.WAV_FILE)
-        audio_url = get_call_url(record.turn_audio_base_path, record.turn_audio_path)
+        audio_url = get_url(record.turn_audio_base_path, record.turn_audio_path)
         return cls(
             call_id=record.call_id,
             call_uuid=record.call_uuid,
