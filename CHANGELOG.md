@@ -1,5 +1,8 @@
 # CHANGELOG
 
+## 0.2.5
+
+- [x] Fix: Separate call url and turn url parsing.
 
 ## 0.2.4
 
