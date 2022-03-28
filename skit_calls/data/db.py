@@ -1,6 +1,7 @@
 import os
 
 import psycopg2 as pg
+
 from skit_calls import constants as const
 
 
@@ -17,7 +18,9 @@ def postgres(
                 host=host, port=port, user=user, password=password, dbname=db_name
             ) as conn:
                 return fn(conn)
+
         return on_connect
+
     return query
 
 
@@ -29,9 +32,5 @@ def connect(
     db_name: str | None = os.environ[const.DB_NAME],
 ):
     return pg.connect(
-        host=host,
-        port=port,
-        user=user,
-        password=password,
-        dbname=db_name
+        host=host, port=port, user=user, password=password, dbname=db_name
     )
