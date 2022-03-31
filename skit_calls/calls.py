@@ -79,7 +79,7 @@ def sample(
     :param custom_search_value: Value for custom search filter key, defaults to None
     :type custom_search_value: Optional[str], optional
 
-    :param inflate: To "in-memory" (works for <5k calls) vs "files", defaults to None
+    :param on_disk: "in-memory" (False) vs "files" (True), defaults to None
     :type save: Optional[str], optional
 
     :return: A directory path if save is set to "files" otherwise path to a file.
@@ -103,6 +103,32 @@ def sample(
             random_call_ids,
             asr_provider=asr_provider,
         )
+        if on_disk:
+            return save_turns_on_disk(random_call_data)
+        return save_turns_in_memory(random_call_data)
+    except SerializationFailure as e:
+        logger.error(e)
+        logger.error(f"This error is common if you are requesting a large dataset.")
+
+
+def select(
+    call_ids: List[int],
+    on_disk: bool = True,
+) -> str | pd.DataFrame:
+    """
+    Sample calls.
+
+    :param call_ids: A list of call ids.
+    :type call_ids: List[int]
+
+    :param on_disk: To save "in-memory" (works for <5k calls) vs "files", defaults to True
+    :type on_disk: bool
+
+    :return: A directory path if save is set to "files" otherwise path to a file.
+    :rtype: str
+    """
+    try:
+        random_call_data = query.gen_random_calls(call_ids)
         if on_disk:
             return save_turns_on_disk(random_call_data)
         return save_turns_in_memory(random_call_data)
