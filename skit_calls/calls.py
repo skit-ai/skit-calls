@@ -7,7 +7,7 @@ from loguru import logger
 from psycopg2.errors import SerializationFailure
 
 from skit_calls import constants as const
-from skit_calls.data import query
+from skit_calls.data import query, mutators
 from skit_calls.data.model import Turn
 
 
@@ -113,6 +113,7 @@ def sample(
 
 def select(
     call_ids: List[int],
+    call_history: bool = False,
     on_disk: bool = True,
 ) -> str | pd.DataFrame:
     """
@@ -129,6 +130,8 @@ def select(
     """
     try:
         random_call_data = query.gen_random_calls(call_ids)
+        if call_history:
+            random_call_data = mutators.add_call_history(random_call_data)
         if on_disk:
             return save_turns_on_disk(random_call_data)
         return save_turns_in_memory(random_call_data)
