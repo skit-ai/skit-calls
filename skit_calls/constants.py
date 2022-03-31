@@ -64,6 +64,7 @@ METADATA = "metadata"
 DEBUG_METADATA = "debug_metadata"
 CREATED_AT = "created_at"
 UPDATED_AT = "updated_at"
+CALL_HISTORY = "call_history"
 # ---------------------------------------------------------
 
 # ------------------------- cli -----------------------------------
