@@ -3,7 +3,7 @@ import os
 from collections import namedtuple
 from datetime import datetime
 from typing import Any, Dict, List, Tuple
-from urllib.parse import urljoin, unquote
+from urllib.parse import unquote, urljoin
 
 import attr
 
@@ -69,14 +69,16 @@ def print_utterance(utterances: Utterances) -> str:
     return utterances[0][0][const.TRANSCRIPT]
 
 
-def get_call_url(base: MaybeString, path: MaybeString, extension: MaybeString = None) -> MaybeString:
+def get_call_url(
+    base: MaybeString, path: MaybeString, extension: MaybeString = None
+) -> MaybeString:
     if not path:
         return None
-    return urljoin(os.path.join(base, ''), unquote(path).lstrip("/")) + extension
+    return urljoin(os.path.join(base, ""), unquote(path).lstrip("/")) + extension
 
 
 def get_url(base: MaybeString, path: MaybeString) -> MaybeString:
-    return urljoin(os.path.join(base, ''), unquote(path).lstrip("/"))
+    return urljoin(os.path.join(base, ""), unquote(path).lstrip("/"))
 
 
 @attr.s(slots=True, weakref_slot=False)
@@ -123,7 +125,11 @@ class Turn:
     def from_record(cls, record: namedtuple):
         intent_name, intent_score, slots = prediction2intent(record.prediction)
         entities = slots2entities(slots)
-        call_url = record.call_url or get_call_url(os.environ[const.CDN_RECORDINGS_BASE_PATH], record.call_url_id, const.WAV_FILE)
+        call_url = record.call_url or get_call_url(
+            os.environ[const.CDN_RECORDINGS_BASE_PATH],
+            record.call_url_id,
+            const.WAV_FILE,
+        )
         audio_url = get_url(record.turn_audio_base_path, record.turn_audio_path)
         return cls(
             call_id=record.call_id,
