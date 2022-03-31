@@ -1,5 +1,5 @@
-import os
 import json
+import os
 from collections import namedtuple
 from datetime import datetime
 from typing import Any, Dict, List, Tuple
@@ -89,22 +89,13 @@ class Turn:
     state: str = attr.ib(kw_only=True, repr=False)
 
     utterances: Utterances = attr.ib(
-        kw_only=True,
-        factory=list,
-        converter=jsonify_utterances,
-        repr=print_utterance
+        kw_only=True, factory=list, converter=jsonify_utterances, repr=print_utterance
     )
     context: Thing | None = attr.ib(
-        kw_only=True,
-        factory=dict,
-        converter=jsonify_maybestr,
-        repr=False
+        kw_only=True, factory=dict, converter=jsonify_maybestr, repr=False
     )
     intents_info: Things = attr.ib(
-        kw_only=True,
-        factory=list,
-        converter=jsonify_maybestr,
-        repr=False
+        kw_only=True, factory=list, converter=jsonify_maybestr, repr=False
     )
 
     intent: IntentName = attr.ib(kw_only=True, default=None)
@@ -125,10 +116,7 @@ class Turn:
         kw_only=True, default=None, converter=float_maybestr, repr=False
     )
     call_duration: MaybeFloat = attr.ib(
-        kw_only=True,
-        default=None,
-        converter=float_maybestr,
-        repr=False
+        kw_only=True, default=None, converter=float_maybestr, repr=False
     )
 
     @classmethod
