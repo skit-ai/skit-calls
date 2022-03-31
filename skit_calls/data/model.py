@@ -70,6 +70,8 @@ def print_utterance(utterances: Utterances) -> str:
 
 
 def get_call_url(base: MaybeString, path: MaybeString, extension: MaybeString = None) -> MaybeString:
+    if not path:
+        return None
     return urljoin(os.path.join(base, ''), unquote(path).lstrip("/")) + extension
 
 
@@ -159,5 +161,8 @@ class Turn:
             call_duration=record.call_duration,
         )
 
+    def serialize(self, _, __, value):
+        return json.dumps(value) if isinstance(value, (dict, list)) else value
+
     def to_dict(self) -> Dict[str, Any]:
-        return attr.asdict(self)
+        return attr.asdict(self, value_serializer=self.serialize)
