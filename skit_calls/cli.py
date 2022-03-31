@@ -68,14 +68,7 @@ def get_version():
     return __version__
 
 
-def build_cli():
-    version = get_version()
-    parser = argparse.ArgumentParser(
-        description=const.DESCRIPTION.format(version={version})
-    )
-    parser.add_argument(
-        "-v", "--verbose", action="count", default=4, help="Increase verbosity"
-    )
+def build_sample_command(parser: argparse.ArgumentParser) -> None:
     parser.add_argument(
         "--lang",
         type=str,
@@ -140,6 +133,25 @@ def build_cli():
     parser.add_argument(
         "--asr-provider", help="Filter calls served via a specific ASR provider."
     )
+
+
+def build_select_command(parser: argparse.ArgumentParser) -> None:
+    parser.add_argument("--call-ids", type=str, nargs="+", help="The call-ids to select.")
+
+
+def build_cli():
+    version = get_version()
+    parser = argparse.ArgumentParser(
+        description=const.DESCRIPTION.format(version={version})
+    )
+    parser.add_argument(
+        "-v", "--verbose", action="count", default=4, help="Increase verbosity"
+    )
+
+    subparsers = parser.add_subparsers(help="Supported means to obtain calls datasets aggregated with their turns.")
+    build_sample_command(subparsers.add_parser('sample', help='Random sample calls with a variety of call/turn filters.'))
+    build_select_command(subparsers.add_parser('select', help='Select calls from known call-ids.'))
+
     parser.add_argument(
         "--on-disk",
         action="store_true",
