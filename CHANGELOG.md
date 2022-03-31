@@ -1,5 +1,11 @@
 # CHANGELOG
 
+## 0.2.6
+
+- [x] Update: `sample` and `select` are sub-commands for skit-calls.
+- [x] Feat: obtain calls directly by passing ids.
+- [x] Fix: Turns are serialized to JSON strings if the value is `List` or `Dict`.
+
 ## 0.2.5
 
 - [x] Fix: Separate call url and turn url parsing.
