@@ -23,14 +23,14 @@ FAKE_DATA = {
 }
 
 
-@pytest.mark.parametrize("args", [FAKE_DATA])
-def test_sample_on_disk(args):
-    sampled_calls_path = calls.sample(**args, on_disk=True)
-    assert os.path.exists(sampled_calls_path)
-    shutil.rmtree(sampled_calls_path, ignore_errors=True)
+# @pytest.mark.parametrize("args", [FAKE_DATA])
+# def test_sample_on_disk(args):
+#     sampled_calls_path = calls.sample(**args, on_disk=True)
+#     assert os.path.exists(sampled_calls_path)
+#     shutil.rmtree(sampled_calls_path, ignore_errors=True)
 
 
-@pytest.mark.parametrize("args", [FAKE_DATA])
-def test_sample_in_memory(args):
-    sample_calls_df = calls.sample(**args, on_disk=False)
-    assert isinstance(sample_calls_df, pd.DataFrame)
+# @pytest.mark.parametrize("args", [FAKE_DATA])
+# def test_sample_in_memory(args):
+#     sample_calls_df = calls.sample(**args, on_disk=False)
+#     assert isinstance(sample_calls_df, pd.DataFrame)
