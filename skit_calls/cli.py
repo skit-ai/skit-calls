@@ -7,11 +7,11 @@ from typing import Tuple
 
 import pytz
 import pandas as pd
+from loguru import logger
 
 from skit_calls import __version__, calls
 from skit_calls import constants as const
 from skit_calls import utils
-from loguru import logger
 
 
 def to_datetime(date_string: str) -> datetime:
@@ -109,7 +109,7 @@ def build_sample_command(parser: argparse.ArgumentParser) -> None:
     parser.add_argument(
         "--call-type",
         type=str,
-        help='The type of call to filter.',
+        help="The type of call to filter.",
         default=const.INBOUND,
         choices=[const.INBOUND, const.OUTBOUND, const.CALL_TEST],
     )
@@ -123,14 +123,12 @@ def build_sample_command(parser: argparse.ArgumentParser) -> None:
     parser.add_argument(
         "--reported", action="store_true", help="Search only reported calls."
     )
+    parser.add_argument("--use-case", help="Filter calls by use-case.")
+    parser.add_argument("--flow-name", help="Filter calls by flow-name.")
     parser.add_argument(
-        "--use-case", help="Filter calls by use-case."
-    )
-    parser.add_argument(
-        "--flow-name", help="Filter calls by flow-name."
-    )
-    parser.add_argument(
-        "--min-audio-duration", type=float, help="Filter calls longer than given duration."
+        "--min-audio-duration",
+        type=float,
+        help="Filter calls longer than given duration.",
     )
     parser.add_argument(
         "--asr-provider", help="Filter calls served via a specific ASR provider."

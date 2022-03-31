@@ -1,14 +1,14 @@
-import tempfile
 import csv
-from typing import Iterable, List, Optional, Any, Dict
+import tempfile
+from typing import Any, Dict, Iterable, List, Optional
 
 import pandas as pd
 from loguru import logger
 from psycopg2.errors import SerializationFailure
 
+from skit_calls import constants as const
 from skit_calls.data import query
 from skit_calls.data.model import Turn
-from skit_calls import constants as const
 
 
 def save_turns_in_memory(stream: Iterable[Dict[str, Any]]) -> pd.DataFrame:
