@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## 0.2.7
+
+- [x] Fix: Command `select` doesn't dispatch to select method.
+
 ## 0.2.6
 
 - [x] Update: `sample` and `select` are sub-commands for skit-calls.
