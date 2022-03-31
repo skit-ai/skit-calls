@@ -2,7 +2,6 @@ import argparse
 import tempfile
 import time
 from datetime import datetime
-from tokenize import maybe
 from typing import Tuple
 
 import pytz
