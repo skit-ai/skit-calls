@@ -21,12 +21,16 @@ def filter_turns(call_data, conv_key):
 
 def add_call_history(turns_df: pd.DataFrame) -> pd.DataFrame:
 
-    # group turns into calls
+    # group turns into calls and sort turns within calls, into order
     calls_df = (
         turns_df.groupby(constants.CALL_UUID)
-            .apply(lambda df: df.to_dict("records"))
-            .reset_index()
-            .rename(columns={0: constants.CALL_HISTORY})
+        .apply(
+            lambda df: df.sort_values(by=constants.CONV_ID, ascending=True).to_dict(
+                "records"
+            )
+        )
+        .reset_index()
+        .rename(columns={0: constants.CALL_HISTORY})
     )
 
     # add call data for all turns
@@ -40,9 +44,10 @@ def add_call_history(turns_df: pd.DataFrame) -> pd.DataFrame:
 
     # filter call data to only keep history
     ## assumption here is that turns will be in ascending order of created time
-    ## this can be enforced in the query or by sorting by `conversation id` here
+    ## this is enforced by sorting by `conversation id` above
     turns_df[constants.CALL_HISTORY] = turns_df.apply(
-        lambda row: filter_turns(row[constants.CALL_HISTORY], row[constants.CONV_UUID]), axis=1
+        lambda row: filter_turns(row[constants.CALL_HISTORY], row[constants.CONV_UUID]),
+        axis=1,
     )
 
     return turns_df
