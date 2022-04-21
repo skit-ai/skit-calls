@@ -4,8 +4,8 @@ import time
 from datetime import datetime
 from typing import Tuple
 
-import pytz
 import pandas as pd
+import pytz
 from loguru import logger
 
 from skit_calls import __version__, calls
@@ -148,9 +148,18 @@ def build_cli():
         "-v", "--verbose", action="count", default=4, help="Increase verbosity"
     )
 
-    subparsers = parser.add_subparsers(dest='command', help="Supported means to obtain calls datasets aggregated with their turns.")
-    build_sample_command(subparsers.add_parser('sample', help='Random sample calls with a variety of call/turn filters.'))
-    build_select_command(subparsers.add_parser('select', help='Select calls from known call-ids.'))
+    subparsers = parser.add_subparsers(
+        dest="command",
+        help="Supported means to obtain calls datasets aggregated with their turns.",
+    )
+    build_sample_command(
+        subparsers.add_parser(
+            "sample", help="Random sample calls with a variety of call/turn filters."
+        )
+    )
+    build_select_command(
+        subparsers.add_parser("select", help="Select calls from known call-ids.")
+    )
 
     parser.add_argument(
         "--on-disk",
@@ -190,7 +199,7 @@ def cmd_to_str(args: argparse.Namespace) -> str:
     utils.configure_logger(args.verbose)
 
     maybe_df = None
-    if args.command == 'sample':
+    if args.command == "sample":
         maybe_df = random_sample_calls(args)
     elif args.command == 'select':
         maybe_df = calls.select(args.call_ids, args.history, on_disk=args.on_disk)
