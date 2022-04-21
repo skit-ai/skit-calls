@@ -135,9 +135,8 @@ def build_sample_command(parser: argparse.ArgumentParser) -> None:
 
 
 def build_select_command(parser: argparse.ArgumentParser) -> None:
-    parser.add_argument(
-        "--call-ids", type=str, nargs="+", help="The call-ids to select."
-    )
+    parser.add_argument("--call-ids", type=str, nargs="+", help="The call-ids to select.")
+    parser.add_argument("--history", action="store_true", help="Collect call history for each turn", default=False)
 
 
 def build_cli():
@@ -202,8 +201,8 @@ def cmd_to_str(args: argparse.Namespace) -> str:
     maybe_df = None
     if args.command == "sample":
         maybe_df = random_sample_calls(args)
-    elif args.command == "select":
-        maybe_df = calls.select(args.call_ids, on_disk=args.on_disk)
+    elif args.command == 'select':
+        maybe_df = calls.select(args.call_ids, args.history, on_disk=args.on_disk)
     else:
         raise argparse.ArgumentError(f"Unknown command {args.command}")
 

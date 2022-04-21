@@ -85,6 +85,7 @@ def get_url(base: MaybeString, path: MaybeString) -> MaybeString:
 class Turn:
     call_id: str = attr.ib(kw_only=True, repr=True, converter=str)
     call_uuid: str = attr.ib(kw_only=True, repr=False)
+    conversation_id: int = attr.ib(kw_only=True, repr=True, converter=int)
     conversation_uuid: str = attr.ib(kw_only=True, repr=False)
     audio_url: str = attr.ib(kw_only=True, repr=False)
     reftime: str = attr.ib(kw_only=True, converter=datetime.isoformat, repr=False)
@@ -134,6 +135,7 @@ class Turn:
         return cls(
             call_id=record.call_id,
             call_uuid=record.call_uuid,
+            conversation_id=record.conversation_id,
             conversation_uuid=record.conversation_uuid,
             audio_url=audio_url,
             call_url=call_url,

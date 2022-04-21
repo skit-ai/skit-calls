@@ -57,6 +57,8 @@ ITEMS = "items"
 UUID = "uuid"
 CONV_UUID = "conversation_uuid"
 CALL_UUID = "call_uuid"
+CONV_ID = "conversation_id"
+CALL_ID = "call_id"
 TURNS = "turns"
 CONVERSATIONS = "conversations"
 PREDICTION = "prediction"
@@ -64,6 +66,7 @@ METADATA = "metadata"
 DEBUG_METADATA = "debug_metadata"
 CREATED_AT = "created_at"
 UPDATED_AT = "updated_at"
+CALL_HISTORY = "call_history"
 # ---------------------------------------------------------
 
 # ------------------------- cli -----------------------------------
