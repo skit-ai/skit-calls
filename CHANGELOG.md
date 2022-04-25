@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## 0.2.8
+
+- [x] Add: Call history can be added to calls dataset by providing the `--history` flag.
+
 ## 0.2.7
 
 - [x] Fix: Command `select` doesn't dispatch to select method.
