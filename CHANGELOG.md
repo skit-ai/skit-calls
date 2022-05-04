@@ -1,5 +1,10 @@
 # CHANGELOG
 
+## 0.2.9
+
+- [x] Feat: Download calls dataset using call uuids from a given csv file.
+- [x] Update: Prediction column added to calls dataset.
+
 ## 0.2.8
 
 - [x] Add: Call history can be added to calls dataset by providing the `--history` flag.
