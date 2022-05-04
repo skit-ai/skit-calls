@@ -112,7 +112,10 @@ def sample(
 
 
 def select(
-    call_ids: List[int],
+    call_ids: Optional[List[int]] = None,
+    org_id: Optional[int] = None,
+    csv_file: Optional[str] = None,
+    uuid_col: Optional[str] = None,
     call_history: bool = False,
     on_disk: bool = True,
 ) -> str | pd.DataFrame:
@@ -129,6 +132,13 @@ def select(
     :rtype: str
     """
     try:
+        if csv_file and uuid_col and org_id:
+            df = pd.read_csv(csv_file)
+            call_ids = query.get_call_ids_from_uuids(org_id, tuple(df[uuid_col].unique()))
+        else:
+            raise ValueError("Both csv_file or uuid_column must be provided.")
+        if not call_ids:
+            raise ValueError("No call ids or csv file provided.")
         random_call_data = query.gen_random_calls(call_ids)
         if call_history:
             random_call_data = mutators.add_call_history(random_call_data)

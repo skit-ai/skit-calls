@@ -135,7 +135,11 @@ def build_sample_command(parser: argparse.ArgumentParser) -> None:
 
 
 def build_select_command(parser: argparse.ArgumentParser) -> None:
-    parser.add_argument("--call-ids", type=str, nargs="+", help="The call-ids to select.")
+    group = parser.add_mutually_exclusive_group(required=True)
+    group.add_argument("--call-ids", type=str, nargs="+", help="The call-ids to select.")
+    group.add_argument("--csv", help="CSV file that contains the call-ids to select.")
+    parser.add_argument("--org-id", help="The org for which you need the data. Required if --csv is set.")
+    parser.add_argument("--uuid-column", help="The column name of the UUID column in the CSV file. Required if --csv is set.")
     parser.add_argument("--history", action="store_true", help="Collect call history for each turn", default=False)
 
 
@@ -202,7 +206,7 @@ def cmd_to_str(args: argparse.Namespace) -> str:
     if args.command == "sample":
         maybe_df = random_sample_calls(args)
     elif args.command == 'select':
-        maybe_df = calls.select(args.call_ids, args.history, on_disk=args.on_disk)
+        maybe_df = calls.select(args.call_ids, args.org_id, args.csv, args.uuid_column, args.history, on_disk=args.on_disk)
     else:
         raise argparse.ArgumentError(f"Unknown command {args.command}")
 

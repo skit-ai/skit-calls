@@ -21,9 +21,7 @@ Entities = Things
 Utterances = Things
 
 
-def prediction2intent(
-    prediction: Dict[str, Any]
-) -> Tuple[IntentName, IntentScore, Slots]:
+def prediction2intent(prediction: Thing) -> Tuple[IntentName, IntentScore, Slots]:
     intents = prediction.get(const.INTENTS, [])
     if not intents:
         return None, None, []
@@ -101,6 +99,8 @@ class Turn:
         kw_only=True, factory=list, converter=jsonify_maybestr, repr=False
     )
 
+    prediction: Thing = attr.ib(kw_only=True, factory=dict, converter=jsonify_maybestr, repr=False)
+
     intent: IntentName = attr.ib(kw_only=True, default=None)
     intent_score: IntentScore = attr.ib(kw_only=True, default=None, repr=print_floats)
     slots: Slots = attr.ib(kw_only=True, factory=list, repr=False)
@@ -141,6 +141,7 @@ class Turn:
             call_url=call_url,
             reftime=record.reftime,
             state=record.state,
+            prediction=record.prediction,
             utterances=record.utterances,
             context=record.context,
             intents_info=record.intents_info,

@@ -67,6 +67,14 @@ def gen_random_call_ids(
     return on_connect
 
 
+def get_call_ids_from_uuids(id_: int, uuids: Tuple[str]) -> Tuple[int]:
+    query = get_query(const.CALL_IDS_FROM_UUIDS_QUERY)
+    with connect() as conn:
+        with conn.cursor() as cursor:
+            cursor.execute(query, {const.UUID: uuids, const.ID: id_})
+            return tuple(id_[0] for id_ in cursor.fetchall())
+
+
 def gen_random_calls(
     call_ids: Tuple[int],
     asr_provider: str | None = None,
@@ -88,7 +96,7 @@ def gen_random_calls(
     )
     logger.debug(f"Creating {batch_size} batches for {call_id_size} calls")
     i = 0
-    with tqdm(total=batch_size) as pbar:
+    with tqdm(total=batch_size, desc="Downloading calls dataset.") as pbar:
         for i in range(0, len(call_ids), limit):
             batch = call_ids[i : i + limit]
             with connect() as conn:

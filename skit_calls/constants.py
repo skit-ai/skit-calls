@@ -92,6 +92,7 @@ S3_URL_PATTERN_2 = r"https:\/\/([a-zA-Z\-]+)\.s3\.\w{2}-(north|south|east|west)-
 S3_OBJ_PATTERN = r"s3:\/\/([a-zA-Z0-9\-]+)\/(.+)"
 RANDOM_CALL_ID_QUERY = "RANDOM_CALL_ID_QUERY"
 RANDOM_CALL_DATA_QUERY = "RANDOM_CALL_DATA_QUERY"
+CALL_IDS_FROM_UUIDS_QUERY = "CALL_IDS_FROM_UUIDS_QUERY"
 RANDOM_CALL_DATA_CURSOR = "random_call_data_cursor"
 
 # Call types
