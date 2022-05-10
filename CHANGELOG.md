@@ -1,5 +1,10 @@
 # CHANGELOG
 
+## 0.2.12
+
+- [x] Add: Delay flag on cli to increase connection timeout.
+- [x] Update: Start and end dates are assumed to be current day's min and max timestamps.
+
 ## 0.2.11
 
 - [x] Fix: Prediction being a `dict` breaks `sample` and `select` commands.
