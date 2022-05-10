@@ -1,5 +1,10 @@
 # CHANGELOG
 
+## 0.2.11
+
+- [x] Fix: Prediction being a `dict` breaks `sample` and `select` commands.
+- [x] Update: JSON dumps retain utf8 chars.
+
 ## 0.2.10
 
 - [x] Feat: Download calls dataset using call uuids from a given csv file.
