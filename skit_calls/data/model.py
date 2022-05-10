@@ -159,7 +159,7 @@ class Turn:
         )
 
     def serialize(self, _, __, value):
-        return json.dumps(value) if isinstance(value, (dict, list)) else value
+        return json.dumps(value, ensure_ascii=False) if isinstance(value, (dict, list)) else value
 
     def to_dict(self) -> Dict[str, Any]:
         return attr.asdict(self, value_serializer=self.serialize)
