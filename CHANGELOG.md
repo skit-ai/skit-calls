@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## 0.2.13
+
+- [x] Fix: arg name `q_delay` fixed to `delay`.
+
 ## 0.2.12
 
 - [x] Add: Delay flag on cli to increase connection timeout.
