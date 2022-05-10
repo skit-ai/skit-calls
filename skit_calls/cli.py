@@ -165,6 +165,10 @@ def build_cli():
         subparsers.add_parser("select", help="Select calls from known call-ids.")
     )
 
+    parser.add_argument("--delay", help="Some queries may timeout and need some delay"
+    " before a new connection is established."
+    " The value should be a between (0-0.5).", default=const.Q_DELAY)
+
     parser.add_argument(
         "--on-disk",
         action="store_true",
@@ -206,7 +210,7 @@ def cmd_to_str(args: argparse.Namespace) -> str:
     if args.command == "sample":
         maybe_df = random_sample_calls(args)
     elif args.command == 'select':
-        maybe_df = calls.select(args.call_ids, args.org_id, args.csv, args.uuid_column, args.history, on_disk=args.on_disk)
+        maybe_df = calls.select(args.call_ids, args.org_id, args.csv, args.uuid_column, args.history, on_disk=args.on_disk, delay=args.q_delay)
     else:
         raise argparse.ArgumentError(f"Unknown command {args.command}")
 
