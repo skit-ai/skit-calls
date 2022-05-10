@@ -1,7 +1,7 @@
 import argparse
 import tempfile
 import time
-from datetime import datetime
+from datetime import datetime, date
 from typing import Tuple
 
 import pandas as pd
@@ -13,13 +13,15 @@ from skit_calls import constants as const
 from skit_calls import utils
 
 
-def to_datetime(date_string: str) -> datetime:
+def to_datetime(date_string: str | None) -> datetime:
     """
     Check if date_string is in YYYY-MM-DD format.
 
     :param date_string: A string representing a date in YYYY-MM-DD format.
     :type date_string: [type]
     """
+    if not date_string:
+        return date_string
     try:
         return datetime.strptime(date_string, "%Y-%m-%d")
     except ValueError as e:
@@ -44,7 +46,9 @@ def validate_date_ranges(start_date: datetime, end_date: datetime) -> None:
 
 
 def process_date_filters(
-    start_date: datetime, end_date: datetime, timezone: str = const.DEFAULT_TIMEZONE
+    start_date: datetime | None,
+    end_date: datetime | None,
+    timezone: str = const.DEFAULT_TIMEZONE
 ) -> Tuple[str, str]:
     """
     Process the date filters.
@@ -58,10 +62,15 @@ def process_date_filters(
     :param timezone: The timezone to use for the start and end dates.
     :type timezone: str
     """
+    today = date.today()
+
+    if not start_date:
+        start_date = datetime.combine(today, datetime.min.time())
+    if not end_date:
+        end_date = datetime.combine(today, datetime.max.time())
+
     start_date = start_date.replace(tzinfo=pytz.timezone(timezone)).isoformat()
-    end_date = end_date.replace(
-        hour=23, minute=59, tzinfo=pytz.timezone(timezone)
-    ).isoformat()
+    end_date = end_date.replace(tzinfo=pytz.timezone(timezone)).isoformat()
     return start_date, end_date
 
 
@@ -84,14 +93,14 @@ def build_sample_command(parser: argparse.ArgumentParser) -> None:
     parser.add_argument(
         "--start-date",
         type=to_datetime,
-        required=True,
+        default=None,
         help="Search calls made after the given date (YYYY-MM-DD).",
     )
     parser.add_argument(
         "--end-date",
         type=to_datetime,
         help="Search calls made before the given date.",
-        default=datetime.now(),
+        default=None,
     )
     parser.add_argument(
         "--timezone",
@@ -179,10 +188,10 @@ def build_cli():
 
 
 def random_sample_calls(args: argparse.Namespace) -> str | pd.DataFrame:
-    validate_date_ranges(args.start_date, args.end_date)
     args.start_date, args.end_date = process_date_filters(
         args.start_date, args.end_date
     )
+    validate_date_ranges(args.start_date, args.end_date)
     start = time.time()
     maybe_df = calls.sample(
         args.org_id,
