@@ -79,6 +79,7 @@ def gen_random_calls(
     call_ids: Tuple[int],
     asr_provider: str | None = None,
     limit: int = const.TURNS_LIMIT,
+    delay: float = const.Q_DELAY
 ):
     time.sleep(1)
     query = get_query(const.RANDOM_CALL_DATA_QUERY)
@@ -105,4 +106,4 @@ def gen_random_calls(
                     result_set = cursor.fetchall()
                     yield from as_turns(result_set)
                     pbar.update(1)
-            time.sleep(0.2)
+            time.sleep(delay)

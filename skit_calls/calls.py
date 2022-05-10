@@ -39,6 +39,7 @@ def sample(
     min_duration: Optional[float] = None,
     asr_provider: Optional[str] = None,
     on_disk: bool = True,
+    delay: float = const.Q_DELAY
 ) -> str | pd.DataFrame:
     """
     Sample calls.
@@ -102,6 +103,7 @@ def sample(
         random_call_data = query.gen_random_calls(
             random_call_ids,
             asr_provider=asr_provider,
+            delay=const.Q_DELAY,
         )
         if on_disk:
             return save_turns_on_disk(random_call_data)
@@ -118,6 +120,7 @@ def select(
     uuid_col: Optional[str] = None,
     call_history: bool = False,
     on_disk: bool = True,
+    delay: float = const.Q_DELAY
 ) -> str | pd.DataFrame:
     """
     Sample calls.
@@ -139,7 +142,7 @@ def select(
             raise ValueError("Both csv_file or uuid_column must be provided.")
         if not call_ids:
             raise ValueError("No call ids or csv file provided.")
-        random_call_data = query.gen_random_calls(call_ids)
+        random_call_data = query.gen_random_calls(call_ids, delay=const.Q_DELAY)
         if call_history:
             random_call_data = mutators.add_call_history(random_call_data)
         if on_disk:

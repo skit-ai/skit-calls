@@ -83,6 +83,7 @@ Learn about this library at: https://github.com/skit-ai/skit-calls
 ON_DISK = "on-disk"
 IN_MEMORY = "in-memory"
 MEMORY_LIMIT = 10e7
+Q_DELAY = 0.2
 DEFAULT_API_GATEWAY_URL = "https://apigateway.vernacular.ai"
 DEFAULT_CALL_QUANTITY = 200
 DEFAULT_TIMEZONE = "Asia/Kolkata"
