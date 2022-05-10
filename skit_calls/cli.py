@@ -219,7 +219,7 @@ def cmd_to_str(args: argparse.Namespace) -> str:
     if args.command == "sample":
         maybe_df = random_sample_calls(args)
     elif args.command == 'select':
-        maybe_df = calls.select(args.call_ids, args.org_id, args.csv, args.uuid_column, args.history, on_disk=args.on_disk, delay=args.q_delay)
+        maybe_df = calls.select(args.call_ids, args.org_id, args.csv, args.uuid_column, args.history, on_disk=args.on_disk, delay=args.delay)
     else:
         raise argparse.ArgumentError(f"Unknown command {args.command}")
 
