@@ -48,6 +48,8 @@ def jsonify_utterances(json_string: MaybeString) -> Thing | None:
 def jsonify_maybestr(json_string: MaybeString) -> Thing | None:
     if not json_string:
         return None
+    if isinstance(json_string, dict):
+        return json_string
     return json.loads(json_string)
 
 
