@@ -20,6 +20,7 @@ You would need credentials from skit.ai to get past dvc pull and beyond.
 3. [poetry](https://python-poetry.org/docs/#osx--linux--bashonwindows-install-instructions)
 4. S3 access credentials from [skit.ai](mailto:access@skit.ai?subject=Request%20for%20s3-credentials)
 5. tunnel secrets by mailing to [skit.ai](mailto:access@skit.ai?subject=Request%20for%20tunnel%20secrets)
+6. [libpq-dev](https://packages.ubuntu.com/jammy/libpq-dev), [postgresql-libs](https://archlinux.org/packages/extra/x86_64/postgresql-libs/) or `brew install postgresql` on mac/[mac M1](https://gist.github.com/phortuin/2fe698b6c741fd84357cec84219c6667).
 
 ### Project setup
 
