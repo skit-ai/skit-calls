@@ -13,15 +13,38 @@ We use this project as a component within [skit-pipelines](https://github.com/sk
 The installation is a little quirky because it is meant for usage within a separate project [here](https://github.com/skit-ai/skit-pipelines).
 You would need credentials from skit.ai to get past dvc pull and beyond.
 
+### Pre-requisites
+
+1. [Miniconda](https://docs.conda.io/en/latest/miniconda.html) or any other python version management tool.
+2. [awscli](https://docs.aws.amazon.com/cli/latest/userguide/getting-started-install.html)
+3. [poetry](https://python-poetry.org/docs/#osx--linux--bashonwindows-install-instructions)
+4. S3 access credentials from [skit.ai](mailto:access@skit.ai?subject=Request%20for%20s3-credentials)
+5. tunnel secrets by mailing to [skit.ai](mailto:access@skit.ai?subject=Request%20for%20tunnel%20secrets)
+
+### Project setup
+
 ```bash
 git clone git@github.com:skit-ai/skit-calls.git
 cd skit-calls
+```
 
-# Highly recommended to create a virtual env or use one.
+### Installing dependencies
+
+```bash
 poetry install
 dvc pull
+```
+
+The `dvc pull` command will create a `secrets/` dir. This is where we store our queries and environment variables.
+
+### Local environment
+
+You need to change the first line to `export DB_HOST="localhost"`.
+
+```bash
 source secrets/env.sh
 ```
+Now you are ready to use the project.
 
 ## Usage
 
