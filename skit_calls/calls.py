@@ -90,7 +90,7 @@ def sample(
     :return: A directory path if save is set to "files" otherwise path to a file.
     :rtype: str
     """
-    try:jjjjjjk
+    try:
         random_call_ids = query.gen_random_call_ids(
             org_id,
             start_date,
