@@ -80,7 +80,7 @@ def gen_random_calls(
     asr_provider: str | None = None,
     states: Set[str] | None = None,
     limit: int = const.TURNS_LIMIT,
-    delay: float = const.Q_DELAY
+    delay: float = const.Q_DELAY,
 ):
     time.sleep(1)
     query = get_query(const.RANDOM_CALL_DATA_QUERY)

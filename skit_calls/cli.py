@@ -1,7 +1,7 @@
 import argparse
 import tempfile
 import time
-from datetime import datetime, date
+from datetime import date, datetime
 from typing import Tuple
 
 import pandas as pd
@@ -48,7 +48,7 @@ def validate_date_ranges(start_date: datetime, end_date: datetime) -> None:
 def process_date_filters(
     start_date: datetime | None,
     end_date: datetime | None,
-    timezone: str = const.DEFAULT_TIMEZONE
+    timezone: str = const.DEFAULT_TIMEZONE,
 ) -> Tuple[str, str]:
     """
     Process the date filters.
@@ -153,11 +153,24 @@ def build_sample_command(parser: argparse.ArgumentParser) -> None:
 
 def build_select_command(parser: argparse.ArgumentParser) -> None:
     group = parser.add_mutually_exclusive_group(required=True)
-    group.add_argument("--call-ids", type=str, nargs="+", help="The call-ids to select.")
+    group.add_argument(
+        "--call-ids", type=str, nargs="+", help="The call-ids to select."
+    )
     group.add_argument("--csv", help="CSV file that contains the call-ids to select.")
-    parser.add_argument("--org-id", help="The org for which you need the data. Required if --csv is set.")
-    parser.add_argument("--uuid-column", help="The column name of the UUID column in the CSV file. Required if --csv is set.")
-    parser.add_argument("--history", action="store_true", help="Collect call history for each turn", default=False)
+    parser.add_argument(
+        "--org-id",
+        help="The org for which you need the data. Required if --csv is set.",
+    )
+    parser.add_argument(
+        "--uuid-column",
+        help="The column name of the UUID column in the CSV file. Required if --csv is set.",
+    )
+    parser.add_argument(
+        "--history",
+        action="store_true",
+        help="Collect call history for each turn",
+        default=False,
+    )
 
 
 def build_cli():
@@ -182,9 +195,13 @@ def build_cli():
         subparsers.add_parser("select", help="Select calls from known call-ids.")
     )
 
-    parser.add_argument("--delay", help="Some queries may timeout and need some delay"
-    " before a new connection is established."
-    " The value should be a between (0-0.5).", default=const.Q_DELAY)
+    parser.add_argument(
+        "--delay",
+        help="Some queries may timeout and need some delay"
+        " before a new connection is established."
+        " The value should be a between (0-0.5).",
+        default=const.Q_DELAY,
+    )
 
     parser.add_argument(
         "--on-disk",
@@ -227,8 +244,16 @@ def cmd_to_str(args: argparse.Namespace) -> str:
     maybe_df = None
     if args.command == "sample":
         maybe_df = random_sample_calls(args)
-    elif args.command == 'select':
-        maybe_df = calls.select(args.call_ids, args.org_id, args.csv, args.uuid_column, args.history, on_disk=args.on_disk, delay=args.delay)
+    elif args.command == "select":
+        maybe_df = calls.select(
+            args.call_ids,
+            args.org_id,
+            args.csv,
+            args.uuid_column,
+            args.history,
+            on_disk=args.on_disk,
+            delay=args.delay,
+        )
     else:
         raise argparse.ArgumentError(f"Unknown command {args.command}")
 

@@ -7,7 +7,7 @@ from loguru import logger
 from psycopg2.errors import SerializationFailure
 
 from skit_calls import constants as const
-from skit_calls.data import query, mutators
+from skit_calls.data import mutators, query
 from skit_calls.data.model import Turn
 
 
