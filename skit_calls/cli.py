@@ -142,6 +142,14 @@ def build_sample_command(parser: argparse.ArgumentParser) -> None:
         "--asr-provider", help="Filter calls served via a specific ASR provider."
     )
 
+    parser.add_argument(
+        "--states",
+        type=str,
+        nargs="*",
+        help="A comma separated list of states to keep turns from, and remove all else.",
+        default=[],
+    )
+
 
 def build_select_command(parser: argparse.ArgumentParser) -> None:
     group = parser.add_mutually_exclusive_group(required=True)
@@ -206,6 +214,7 @@ def random_sample_calls(args: argparse.Namespace) -> str | pd.DataFrame:
         flow_name=args.flow_name,
         min_duration=args.min_audio_duration,
         asr_provider=args.asr_provider,
+        states=args.states,
         on_disk=args.on_disk,
     )
     logger.info(f"Finished in {time.time() - start:.2f} seconds")

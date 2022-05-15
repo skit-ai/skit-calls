@@ -78,15 +78,18 @@ def get_call_ids_from_uuids(id_: int, uuids: Tuple[str]) -> Tuple[int]:
 def gen_random_calls(
     call_ids: Tuple[int],
     asr_provider: str | None = None,
+    states: Set[str] | None = None,
     limit: int = const.TURNS_LIMIT,
     delay: float = const.Q_DELAY
 ):
     time.sleep(1)
     query = get_query(const.RANDOM_CALL_DATA_QUERY)
+    states = set(states) or set([None])
     turn_filters = {
         const.ASR_PROVIDER: asr_provider,
         const.CONVERSATION_TYPES: (const.UCASE_INPUT,),
         const.CONVERSATION_SUB_TYPES: (const.UCASE_AUDIO,),
+        const.STATES: tuple(states),
     }
 
     call_id_size = len(call_ids)

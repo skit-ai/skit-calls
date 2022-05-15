@@ -38,6 +38,7 @@ def sample(
     flow_name: Optional[str] = None,
     min_duration: Optional[float] = None,
     asr_provider: Optional[str] = None,
+    states: Optional[List[str]] = None,
     on_disk: bool = True,
     delay: float = const.Q_DELAY
 ) -> str | pd.DataFrame:
@@ -80,13 +81,16 @@ def sample(
     :param custom_search_value: Value for custom search filter key, defaults to None
     :type custom_search_value: Optional[str], optional
 
+    :param states: A list of states that should be picked from sampling, defaults to None
+    :type ignore_callers: Optional[List[str]], optional
+
     :param on_disk: "in-memory" (False) vs "files" (True), defaults to None
     :type save: Optional[str], optional
 
     :return: A directory path if save is set to "files" otherwise path to a file.
     :rtype: str
     """
-    try:
+    try:jjjjjjk
         random_call_ids = query.gen_random_call_ids(
             org_id,
             start_date,
@@ -103,6 +107,7 @@ def sample(
         random_call_data = query.gen_random_calls(
             random_call_ids,
             asr_provider=asr_provider,
+            states=states,
             delay=const.Q_DELAY,
         )
         if on_disk:
