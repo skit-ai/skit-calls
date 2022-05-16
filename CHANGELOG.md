@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## 0.2.14
+
+- [x] feat: We can filter data by states.
+
 ## 0.2.13
 
 - [x] Fix: arg name `q_delay` fixed to `delay`.
