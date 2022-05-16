@@ -1,5 +1,6 @@
-import pandas as pd
 from typing import Union
+
+import pandas as pd
 
 from skit_calls import constants
 

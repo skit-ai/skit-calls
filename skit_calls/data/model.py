@@ -101,7 +101,9 @@ class Turn:
         kw_only=True, factory=list, converter=jsonify_maybestr, repr=False
     )
 
-    prediction: Thing = attr.ib(kw_only=True, factory=dict, converter=jsonify_maybestr, repr=False)
+    prediction: Thing = attr.ib(
+        kw_only=True, factory=dict, converter=jsonify_maybestr, repr=False
+    )
 
     intent: IntentName = attr.ib(kw_only=True, default=None)
     intent_score: IntentScore = attr.ib(kw_only=True, default=None, repr=print_floats)
@@ -161,7 +163,11 @@ class Turn:
         )
 
     def serialize(self, _, __, value):
-        return json.dumps(value, ensure_ascii=False) if isinstance(value, (dict, list)) else value
+        return (
+            json.dumps(value, ensure_ascii=False)
+            if isinstance(value, (dict, list))
+            else value
+        )
 
     def to_dict(self) -> Dict[str, Any]:
         return attr.asdict(self, value_serializer=self.serialize)

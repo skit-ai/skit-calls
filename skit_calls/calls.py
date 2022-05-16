@@ -7,7 +7,7 @@ from loguru import logger
 from psycopg2.errors import SerializationFailure
 
 from skit_calls import constants as const
-from skit_calls.data import query, mutators
+from skit_calls.data import mutators, query
 from skit_calls.data.model import Turn
 
 
@@ -38,6 +38,7 @@ def sample(
     flow_name: Optional[str] = None,
     min_duration: Optional[float] = None,
     asr_provider: Optional[str] = None,
+    states: Optional[List[str]] = None,
     on_disk: bool = True,
     delay: float = const.Q_DELAY
 ) -> str | pd.DataFrame:
@@ -80,6 +81,9 @@ def sample(
     :param custom_search_value: Value for custom search filter key, defaults to None
     :type custom_search_value: Optional[str], optional
 
+    :param states: A list of states that should be picked from sampling, defaults to None
+    :type ignore_callers: Optional[List[str]], optional
+
     :param on_disk: "in-memory" (False) vs "files" (True), defaults to None
     :type save: Optional[str], optional
 
@@ -103,6 +107,7 @@ def sample(
         random_call_data = query.gen_random_calls(
             random_call_ids,
             asr_provider=asr_provider,
+            states=states,
             delay=const.Q_DELAY,
         )
         if on_disk:
