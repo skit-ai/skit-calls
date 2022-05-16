@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## 0.2.15
+
+- [x] fix: Optional state values are erroneous if not used via cli.
+
 ## 0.2.14
 
 - [x] feat: We can filter data by states.

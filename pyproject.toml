@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "skit-calls"
-version = "0.2.14"
+version = "0.2.15"
 description = "Library to fetch calls from a given environment."
 authors = ["ltbringer <amresh.venugopal@gmail.com>"]
 license = "GPL-3.0-only"
