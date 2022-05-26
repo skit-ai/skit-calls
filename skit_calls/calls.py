@@ -9,6 +9,7 @@ from psycopg2.errors import SerializationFailure
 from skit_calls import constants as const
 from skit_calls.data import mutators, query
 from skit_calls.data.model import Turn
+from skit_calls.utils import optimal_paging_params
 
 
 def save_turns_in_memory(stream: Iterable[Dict[str, Any]]) -> pd.DataFrame:
@@ -32,15 +33,16 @@ def sample(
     lang: str,
     call_quantity: int = 200,
     call_type: str = const.INBOUND,
-    ignore_callers: Optional[List[str]] = None,
+    ignore_callers: List[str] | None = None,
     reported: bool = False,
-    use_case: Optional[str] = None,
-    flow_name: Optional[str] = None,
-    min_duration: Optional[float] = None,
-    asr_provider: Optional[str] = None,
-    states: Optional[List[str]] = None,
+    use_case: str | None = None,
+    flow_name: str | None = None,
+    min_duration: float | None = None,
+    asr_provider: str | None = None,
+    states: List[str] | None = None,
     on_disk: bool = True,
-    delay: float = const.Q_DELAY
+    max_turns_batch_limit: int | None = None,
+    delay: float | None = None,
 ) -> str | pd.DataFrame:
     """
     Sample calls.
@@ -103,12 +105,19 @@ def sample(
             flow_name=flow_name,
             excluded_numbers=ignore_callers,
             reported=reported,
-        )()
+        )()                                                                                                                                                             
+        if not delay and not max_turns_batch_limit:
+            max_turns_batch_limit, delay = optimal_paging_params(
+                total_count=len(random_call_ids),
+                page_size=max_turns_batch_limit or const.TURNS_LIMIT,
+                delay=delay or const.Q_DELAY
+            )
         random_call_data = query.gen_random_calls(
             random_call_ids,
             asr_provider=asr_provider,
             states=states,
-            delay=const.Q_DELAY,
+            limit=max_turns_batch_limit or const.TURNS_LIMIT,
+            delay=delay or const.Q_DELAY,
         )
         if on_disk:
             return save_turns_on_disk(random_call_data)
