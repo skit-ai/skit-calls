@@ -197,10 +197,16 @@ def build_cli():
 
     parser.add_argument(
         "--delay",
+        type=float,
         help="Some queries may timeout and need some delay"
         " before a new connection is established."
         " The value should be a between (0-0.5).",
-        default=const.Q_DELAY,
+    )
+    
+    parser.add_argument(
+        "--max-turns-batch-limit",
+        type=int,
+        help="Maximum number of turns to be collected in a single batch.",
     )
 
     parser.add_argument(
@@ -233,6 +239,8 @@ def random_sample_calls(args: argparse.Namespace) -> str | pd.DataFrame:
         asr_provider=args.asr_provider,
         states=args.states,
         on_disk=args.on_disk,
+        max_turns_batch_limit=args.max_turns_batch_limit,
+        delay=args.delay,
     )
     logger.info(f"Finished in {time.time() - start:.2f} seconds")
     return maybe_df

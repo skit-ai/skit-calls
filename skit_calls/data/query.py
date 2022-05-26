@@ -102,7 +102,7 @@ def gen_random_calls(
     logger.debug(f"Creating {batch_size} batches for {call_id_size} calls")
     i = 0
     with tqdm(total=batch_size, desc="Downloading calls dataset.") as pbar:
-        for i in range(0, len(call_ids), limit):
+        for i in range(0, call_id_size, limit):
             batch = call_ids[i : i + limit]
             with connect() as conn:
                 with conn.cursor(cursor_factory=NamedTupleCursor) as cursor:

@@ -3,7 +3,7 @@ Module provides access to logger config, session token and package version.
 """
 import os
 import sys
-from typing import Optional
+from typing import Optional, Tuple
 
 import toml
 from loguru import logger
@@ -68,3 +68,26 @@ def read_session() -> Optional[str]:
             return handle.read().strip()
     except FileNotFoundError:
         return None
+
+def optimal_paging_params(total_count: int, page_size: int, delay: int) -> Tuple[int, float]:
+    """
+    Calculate optimal page size and delay value for a given total call count.
+    """
+    # if total_count <= 500
+    # delay = 0.2 and page_size = 3000
+
+    # if total_count = 2000
+    # delay = 0.2 + 0.05 = 0.25 and page_size = 3000 // 1.8 = 1666
+
+    # if total_count = 20000
+    # delay = 0.25 + 0.5 = 0.3 and page_size = 1666 // 1.8 = 925
+    
+    init_call_quantity = 200
+    
+    if total_count <= 500:
+        return page_size, delay
+    while init_call_quantity < total_count:
+        init_call_quantity *= 10
+        delay += 0.05
+        page_size //= 1.8
+    return int(page_size), delay
