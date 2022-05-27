@@ -4,7 +4,6 @@ from typing import Any, Dict, Iterable, List, Optional
 
 import pandas as pd
 from loguru import logger
-from psycopg2.errors import SerializationFailure
 
 from skit_calls import constants as const
 from skit_calls.data import mutators, query
@@ -41,8 +40,8 @@ def sample(
     asr_provider: str | None = None,
     states: List[str] | None = None,
     on_disk: bool = True,
-    max_turns_batch_limit: int | None = None,
-    delay: float | None = None,
+    batch_turns: int = const.TURNS_LIMIT,
+    delay: float = const.Q_DELAY,
 ) -> str | pd.DataFrame:
     """
     Sample calls.
@@ -92,39 +91,29 @@ def sample(
     :return: A directory path if save is set to "files" otherwise path to a file.
     :rtype: str
     """
-    try:
-        random_call_ids = query.gen_random_call_ids(
-            org_id,
-            start_date,
-            end_date,
-            limit=call_quantity,
-            call_type=call_type,
-            lang=lang,
-            min_duration=min_duration,
-            use_case=use_case,
-            flow_name=flow_name,
-            excluded_numbers=ignore_callers,
-            reported=reported,
-        )()                                                                                                                                                             
-        if not delay and not max_turns_batch_limit:
-            max_turns_batch_limit, delay = optimal_paging_params(
-                total_count=len(random_call_ids),
-                page_size=max_turns_batch_limit or const.TURNS_LIMIT,
-                delay=delay or const.Q_DELAY
-            )
-        random_call_data = query.gen_random_calls(
-            random_call_ids,
-            asr_provider=asr_provider,
-            states=states,
-            limit=max_turns_batch_limit or const.TURNS_LIMIT,
-            delay=delay or const.Q_DELAY,
-        )
-        if on_disk:
-            return save_turns_on_disk(random_call_data)
-        return save_turns_in_memory(random_call_data)
-    except SerializationFailure as e:
-        logger.error(e)
-        logger.error(f"This error is common if you are requesting a large dataset.")
+    random_call_ids = query.gen_random_call_ids(
+        org_id,
+        start_date,
+        end_date,
+        limit=call_quantity,
+        call_type=call_type,
+        lang=lang,
+        min_duration=min_duration,
+        use_case=use_case,
+        flow_name=flow_name,
+        excluded_numbers=ignore_callers,
+        reported=reported,
+    )()
+    random_call_data = query.gen_random_calls(
+        random_call_ids,
+        asr_provider=asr_provider,
+        states=states,
+        limit=batch_turns,
+        delay=delay,
+    )
+    if on_disk:
+        return save_turns_on_disk(random_call_data)
+    return save_turns_in_memory(random_call_data)
 
 
 def select(
