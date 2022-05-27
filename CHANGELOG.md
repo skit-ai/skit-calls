@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## 0.2.16
+
+- [x] perf: We retry a batch of turns if it fails due to any db error. Removed mandatory inter-batch delays.
+
 ## 0.2.15
 
 - [x] fix: Optional state values are erroneous if not used via cli.
