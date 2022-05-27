@@ -7,6 +7,7 @@ from loguru import logger
 from psycopg2.extensions import connection as Conn
 from psycopg2.extras import NamedTupleCursor
 from tqdm import tqdm
+from psycopg2.errors import SerializationFailure, OperationalError
 
 from skit_calls import constants as const
 from skit_calls.data.db import connect, postgres
@@ -101,13 +102,19 @@ def gen_random_calls(
     )
     logger.debug(f"Creating {batch_size} batches for {call_id_size} calls")
     i = 0
-    with tqdm(total=batch_size, desc="Downloading calls dataset.") as pbar:
-        for i in range(0, call_id_size, limit):
+
+    with tqdm(total=batch_size, desc="Downloading turns for calls dataset.") as pbar:
+        while i < call_id_size:
             batch = call_ids[i : i + limit]
-            with connect() as conn:
-                with conn.cursor(cursor_factory=NamedTupleCursor) as cursor:
-                    cursor.execute(query, {**turn_filters, const.CALL_IDS: batch})
-                    result_set = cursor.fetchall()
-                    yield from as_turns(result_set)
-                    pbar.update(1)
-            time.sleep(delay)
+            try:
+                with connect() as conn:
+                    with conn.cursor(cursor_factory=NamedTupleCursor) as cursor:
+                        cursor.execute(query, {**turn_filters, const.CALL_IDS: batch})
+                        result_set = cursor.fetchall()
+                        yield from as_turns(result_set)
+                        pbar.update(1)
+                i += limit
+            except (SerializationFailure, OperationalError) as e:
+                logger.error(e)
+                logger.error(f"This error is common if you are requesting a large dataset. We will retry the batch in a while.")
+                time.sleep(delay)
