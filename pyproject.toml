@@ -10,16 +10,16 @@ repository = "https://github.com/skit-ai/skit-calls"
 python = ">=3.8,<3.11"
 aiofiles = "0.8.0"
 aiohttp = "3.8.1"
-attrs = "21.4.0"
-dvc = {extras = ["s3"], version = "^2.10.2"}
+attrs = "20.3.0"
+dvc = {extras = ["s3"], version = "2.9.5"}
 loguru = "0.5.3"
 numpy = "1.22.3"
-pandas = "1.4.1"
+pandas = "1.3.2"
 psycopg2 = "2.9.3"
 pydash = "^5.1.0"
 PyYAML = "^5.3"
 toml = "0.10.2"
-tqdm = "4.63.3"
+tqdm = "4.62.1"
 
 [tool.poetry.dev-dependencies]
 pytest = "^6.2.5"
