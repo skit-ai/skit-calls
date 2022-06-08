@@ -2,17 +2,17 @@ import json
 import os
 from collections import namedtuple
 from datetime import datetime
-from typing import Any, Dict, List, Tuple
+from typing import Any, Dict, List, Tuple, Optional
 from urllib.parse import unquote, urljoin
 
 import attr
 
 from skit_calls import constants as const
 
-MaybeString = str | None
-MaybeFloat = float | None
+MaybeString = Optional[str]
+MaybeFloat = Optional[float]
 Thing = Dict[str, Any]
-Things = List[Thing] | None
+Things = Optional[List[Thing]]
 
 IntentName = MaybeString
 IntentScore = MaybeFloat
@@ -33,7 +33,7 @@ def slots2entities(slots: Slots) -> Entities:
     return [entity for slot in slots for entity in slot.get(const.VALUES, [])]
 
 
-def jsonify_utterances(json_string: MaybeString) -> Thing | None:
+def jsonify_utterances(json_string: MaybeString) -> Optional[Thing]:
     if not json_string:
         return None
     utterances = json.loads(json_string)
@@ -45,7 +45,7 @@ def jsonify_utterances(json_string: MaybeString) -> Thing | None:
     return None
 
 
-def jsonify_maybestr(json_string: MaybeString) -> Thing | None:
+def jsonify_maybestr(json_string: MaybeString) -> Optional[Thing]:
     if not json_string:
         return None
     if isinstance(json_string, dict):
@@ -94,7 +94,7 @@ class Turn:
     utterances: Utterances = attr.ib(
         kw_only=True, factory=list, converter=jsonify_utterances, repr=print_utterance
     )
-    context: Thing | None = attr.ib(
+    context: Optional[Thing] = attr.ib(
         kw_only=True, factory=dict, converter=jsonify_maybestr, repr=False
     )
     intents_info: Things = attr.ib(

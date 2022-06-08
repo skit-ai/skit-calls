@@ -1,7 +1,7 @@
 import os
 import time
 from pprint import pformat
-from typing import Any, Dict, Iterable, Set, Tuple
+from typing import Any, Dict, Iterable, Set, Tuple, Optional
 
 from loguru import logger
 from psycopg2.extensions import connection as Conn
@@ -31,11 +31,11 @@ def gen_random_call_ids(
     limit: int = const.DEFAULT_CALL_QUANTITY,
     call_type: str = const.INBOUND,
     reported: bool = False,
-    use_case: str | None = None,
-    lang: str | None = None,
-    flow_name: str | None = None,
-    min_duration: float | None = None,
-    excluded_numbers: Set[str] | None = None,
+    use_case: Optional[str] = None,
+    lang: Optional[str] = None,
+    flow_name: Optional[str] = None,
+    min_duration: Optional[float] = None,
+    excluded_numbers: Optional[Set[str]] = None,
 ):
     excluded_numbers = set(excluded_numbers) or set()
     excluded_numbers = excluded_numbers.union(const.DEFAULT_IGNORE_CALLERS_LIST)
@@ -78,8 +78,8 @@ def get_call_ids_from_uuids(id_: int, uuids: Tuple[str]) -> Tuple[int]:
 
 def gen_random_calls(
     call_ids: Tuple[int],
-    asr_provider: str | None = None,
-    states: Set[str] | None = None,
+    asr_provider: Optional[str] = None,
+    states: Optional[Set[str]] = None,
     limit: int = const.TURNS_LIMIT,
     delay: float = const.Q_DELAY,
 ):

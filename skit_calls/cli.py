@@ -1,6 +1,7 @@
 import argparse
 import tempfile
 import time
+from typing import Optional, Union
 from datetime import date, datetime
 from typing import Tuple
 
@@ -13,7 +14,7 @@ from skit_calls import constants as const
 from skit_calls import utils
 
 
-def to_datetime(date_string: str | None) -> datetime:
+def to_datetime(date_string: Optional[str]) -> datetime:
     """
     Check if date_string is in YYYY-MM-DD format.
 
@@ -46,8 +47,8 @@ def validate_date_ranges(start_date: datetime, end_date: datetime) -> None:
 
 
 def process_date_filters(
-    start_date: datetime | None,
-    end_date: datetime | None,
+    start_date: Optional[datetime],
+    end_date: Optional[datetime],
     timezone: str = const.DEFAULT_TIMEZONE,
 ) -> Tuple[str, str]:
     """
@@ -220,7 +221,7 @@ def build_cli():
     return parser
 
 
-def random_sample_calls(args: argparse.Namespace) -> str | pd.DataFrame:
+def random_sample_calls(args: argparse.Namespace) -> Union[str, pd.DataFrame]:
     args.start_date, args.end_date = process_date_filters(
         args.start_date, args.end_date
     )

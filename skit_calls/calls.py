@@ -1,6 +1,6 @@
 import csv
 import tempfile
-from typing import Any, Dict, Iterable, List, Optional
+from typing import Any, Dict, Iterable, List, Optional, Union
 
 import pandas as pd
 from loguru import logger
@@ -32,17 +32,17 @@ def sample(
     lang: str,
     call_quantity: int = 200,
     call_type: str = const.INBOUND,
-    ignore_callers: List[str] | None = None,
+    ignore_callers: Optional[List[str]] = None,
     reported: bool = False,
-    use_case: str | None = None,
-    flow_name: str | None = None,
-    min_duration: float | None = None,
-    asr_provider: str | None = None,
-    states: List[str] | None = None,
+    use_case: Optional[str] = None,
+    flow_name: Optional[str] = None,
+    min_duration: Optional[float] = None,
+    asr_provider: Optional[str] = None,
+    states: Optional[List[str]] = None,
     on_disk: bool = True,
     batch_turns: int = const.TURNS_LIMIT,
     delay: float = const.Q_DELAY,
-) -> str | pd.DataFrame:
+) -> Union[str, pd.DataFrame]:
     """
     Sample calls.
 
@@ -124,7 +124,7 @@ def select(
     call_history: bool = False,
     on_disk: bool = True,
     delay: float = const.Q_DELAY
-) -> str | pd.DataFrame:
+) -> Union[str, pd.DataFrame]:
     """
     Sample calls.
 
