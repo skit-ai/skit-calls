@@ -128,7 +128,7 @@ class Turn:
 
     @classmethod
     def from_record(cls, record: namedtuple):
-        intent_name, intent_score, slots = prediction2intent(record.prediction)
+        intent_name, intent_score, slots = prediction2intent(record.prediction or {})
         entities = slots2entities(slots)
         call_url = record.call_url or get_call_url(
             os.environ[const.CDN_RECORDINGS_BASE_PATH],
