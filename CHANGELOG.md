@@ -1,5 +1,10 @@
 # CHANGELOG
 
+## 0.2.17
+
+- [x] fix: 'AttributeError: 'NoneType' object has no attribute 'get' on fetching calls with failed predictions.
+- [x] update: Support python 3.8-3.10
+
 ## 0.2.16
 
 - [x] perf: We retry a batch of turns if it fails due to any db error. Removed mandatory inter-batch delays.
