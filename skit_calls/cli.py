@@ -1,9 +1,8 @@
 import argparse
 import tempfile
 import time
-from typing import Optional, Union
-from datetime import date, datetime
-from typing import Tuple
+from typing import Optional, Union, Tuple
+from datetime import date, datetime, timedelta
 
 import pandas as pd
 import pytz
@@ -47,8 +46,12 @@ def validate_date_ranges(start_date: datetime, end_date: datetime) -> None:
 
 
 def process_date_filters(
-    start_date: Optional[datetime],
-    end_date: Optional[datetime],
+    start_date: Optional[datetime] = None,
+    end_date: Optional[datetime] = None,
+    start_date_offset: int = 0,
+    end_date_offset: int = 0,
+    start_time_offset: int = 0,
+    end_time_offset: int = 0,
     timezone: str = const.DEFAULT_TIMEZONE,
 ) -> Tuple[str, str]:
     """
@@ -67,8 +70,10 @@ def process_date_filters(
 
     if not start_date:
         start_date = datetime.combine(today, datetime.min.time())
+        start_date = start_date + timedelta(days=start_date_offset, hours=start_time_offset)
     if not end_date:
         end_date = datetime.combine(today, datetime.max.time())
+        end_date = end_date + timedelta(days=end_date_offset, hours=end_time_offset)
 
     start_date = start_date.replace(tzinfo=pytz.timezone(timezone)).isoformat()
     end_date = end_date.replace(tzinfo=pytz.timezone(timezone)).isoformat()
