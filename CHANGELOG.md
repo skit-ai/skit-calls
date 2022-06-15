@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## 0.2.18
+
+- [x] add: offsets for start and end date along with start and end times (hour only).
+
 ## 0.2.17
 
 - [x] fix: 'AttributeError: 'NoneType' object has no attribute 'get' on fetching calls with failed predictions.
