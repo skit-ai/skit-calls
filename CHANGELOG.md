@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## 0.2.19
+
+- [x] add: end date now takes 23:59:59 as max time inplace of 00:00:00.
+
 ## 0.2.18
 
 - [x] add: offsets for start and end date along with start and end times (hour only).
