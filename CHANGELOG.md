@@ -1,5 +1,11 @@
 # CHANGELOG
 
+
+## 0.2.20
+
+- [x] feat: serve on-cloud calls via fsm call audio api. s3 sync may take time so we make a request to serve via fsm.
+    Since the scheme requires uuid, on-prem audios are not supported. Use `--on-prem` to prevent this from getting applied.
+
 ## 0.2.19
 
 - [x] add: end date now takes 23:59:59 as max time inplace of 00:00:00.
