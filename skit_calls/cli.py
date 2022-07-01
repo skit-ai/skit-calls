@@ -74,7 +74,9 @@ def process_date_filters(
     if not end_date:
         end_date = datetime.combine(today, datetime.max.time())
         end_date = end_date + timedelta(days=end_date_offset, hours=end_time_offset)
-
+    else:
+        end_date = end_date + timedelta(hours=23, minutes=59, seconds=59)
+        
     start_date = start_date.replace(tzinfo=pytz.timezone(timezone)).isoformat()
     end_date = end_date.replace(tzinfo=pytz.timezone(timezone)).isoformat()
     return start_date, end_date
