@@ -128,6 +128,12 @@ def build_sample_command(parser: argparse.ArgumentParser) -> None:
         choices=[const.INBOUND, const.OUTBOUND, const.CALL_TEST],
     )
     parser.add_argument(
+        "--on-prem",
+        action="store_true",
+        help="Search calls made on-prem.",
+        default=False
+    )
+    parser.add_argument(
         "--ignore-callers",
         type=str,
         nargs="*",
@@ -166,6 +172,12 @@ def build_select_command(parser: argparse.ArgumentParser) -> None:
     parser.add_argument(
         "--org-id",
         help="The org for which you need the data. Required if --csv is set.",
+    )
+    parser.add_argument(
+        "--on-prem",
+        action="store_true",
+        help="Search calls made on-prem.",
+        default=False
     )
     parser.add_argument(
         "--uuid-column",
@@ -240,6 +252,7 @@ def random_sample_calls(args: argparse.Namespace) -> Union[str, pd.DataFrame]:
         call_quantity=args.call_quantity,
         call_type=args.call_type,
         ignore_callers=args.ignore_callers,
+        on_prem=args.on_prem,
         reported=args.reported,
         use_case=args.use_case,
         flow_name=args.flow_name,

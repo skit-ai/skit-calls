@@ -32,6 +32,7 @@ def sample(
     lang: str,
     call_quantity: int = 200,
     call_type: str = const.INBOUND,
+    on_prem: bool = False,
     ignore_callers: Optional[List[str]] = None,
     reported: bool = False,
     use_case: Optional[str] = None,
@@ -60,6 +61,9 @@ def sample(
 
     :param lang_code: A language code.
     :type lang_code: str
+
+    :param on_prem: Whether to use on-prem or on-cloud.
+    :type on_prem: bool
 
     :param call_quantity: Number of calls to be fetched, defaults to 200
     :type call_quantity: int, optional
@@ -110,6 +114,7 @@ def sample(
         states=states,
         limit=batch_turns,
         delay=delay,
+        on_prem=on_prem,
     )
     if on_disk:
         return save_turns_on_disk(random_call_data)
