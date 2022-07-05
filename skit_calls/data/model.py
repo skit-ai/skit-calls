@@ -79,7 +79,7 @@ def get_call_url(
 
 def get_url(base: MaybeString, path: MaybeString, call_uuid: str, on_prem: bool = False) -> MaybeString:
     audio_url = urljoin(os.path.join(base, ""), unquote(path).lstrip("/"))
-    cca_v2_url = f"https://cca-v2-apis.vernacular.ai/calls/{call_uuid}/audio/?audio_url={audio_url}&audio_path={unquote(path)}"
+    cca_v2_url = f"https://cca-v2-apis.vernacular.ai/calls-with-cors/{call_uuid}/audio/?audio_url={audio_url}&audio_path={unquote(path)}"
     return audio_url if on_prem else cca_v2_url
 
 

@@ -1,5 +1,8 @@
 # CHANGELOG
 
+## 0.2.21
+
+- [x] update: url param for enabling cors.
 
 ## 0.2.20
 
