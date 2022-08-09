@@ -82,7 +82,7 @@ def gen_random_calls(
     states: Optional[Set[str]] = None,
     limit: int = const.TURNS_LIMIT,
     delay: float = const.Q_DELAY,
-    domain_url: str = "https://cca-v2-apis.vernacular.ai",
+    domain_url: str = const.DEFAULT_AUDIO_URL_DOMAIN,
     on_prem: bool = False,
 ):
     time.sleep(1)

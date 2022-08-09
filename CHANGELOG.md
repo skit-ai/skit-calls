@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## 0.2.22
+
+- [x] update: domain-url as param to accomodate for changing domains.
+
 ## 0.2.21
 
 - [x] update: url param for enabling cors.
