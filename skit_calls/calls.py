@@ -30,6 +30,7 @@ def sample(
     start_date: str,
     end_date: str,
     lang: str,
+    domain_url: str,
     call_quantity: int = 200,
     call_type: str = const.INBOUND,
     on_prem: bool = False,
@@ -114,6 +115,7 @@ def sample(
         states=states,
         limit=batch_turns,
         delay=delay,
+        domain_url=domain_url,
         on_prem=on_prem,
     )
     if on_disk:

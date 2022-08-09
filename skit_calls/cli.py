@@ -130,6 +130,12 @@ def build_sample_command(parser: argparse.ArgumentParser) -> None:
         choices=[const.INBOUND, const.OUTBOUND, const.CALL_TEST],
     )
     parser.add_argument(
+        "--domain-url",
+        type=str,
+        help="The domain to use while forming public audio_urls",
+        default=const.DEFAULT_AUDIO_URL_DOMAIN,
+    )
+    parser.add_argument(
         "--on-prem",
         action="store_true",
         help="Search calls made on-prem.",
@@ -180,6 +186,12 @@ def build_select_command(parser: argparse.ArgumentParser) -> None:
         action="store_true",
         help="Search calls made on-prem.",
         default=False
+    )
+    parser.add_argument(
+        "--domain-url",
+        type=str,
+        help="The domain to use while forming public audio_urls",
+        default=const.DEFAULT_AUDIO_URL_DOMAIN,
     )
     parser.add_argument(
         "--uuid-column",
@@ -251,6 +263,7 @@ def random_sample_calls(args: argparse.Namespace) -> Union[str, pd.DataFrame]:
         args.start_date,
         args.end_date,
         args.lang,
+        domain_url=args.domain_url,
         call_quantity=args.call_quantity,
         call_type=args.call_type,
         ignore_callers=args.ignore_callers,
