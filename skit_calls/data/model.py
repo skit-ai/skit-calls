@@ -77,10 +77,16 @@ def get_call_url(
     return urljoin(os.path.join(base, ""), unquote(path).lstrip("/")) + extension
 
 
-def get_url(base: MaybeString, path: MaybeString, call_uuid: str, on_prem: bool = False) -> MaybeString:
+def get_url(
+    base: MaybeString,
+    path: MaybeString,
+    call_uuid: str,
+    domain_url: str,
+    on_prem: bool = False
+) -> MaybeString:
     audio_url = urljoin(os.path.join(base, ""), unquote(path).lstrip("/"))
-    cca_v2_url = f"https://cca-v2-apis.vernacular.ai/calls-with-cors/{call_uuid}/audio/?audio_url={audio_url}&audio_path={unquote(path)}"
-    return audio_url if on_prem else cca_v2_url
+    fsm_url = urljoin(domain_url, f"calls-with-cors/{call_uuid}/audio/?audio_url={audio_url}&audio_path={unquote(path)}")
+    return audio_url if on_prem else fsm_url
 
 
 @attr.s(slots=True, weakref_slot=False)
@@ -129,7 +135,7 @@ class Turn:
     )
 
     @classmethod
-    def from_record(cls, record: namedtuple, on_prem: bool = False) -> "Turn":
+    def from_record(cls, record: namedtuple, domain_url: str, on_prem: bool = False) -> "Turn":
         intent_name, intent_score, slots = prediction2intent(record.prediction or {})
         entities = slots2entities(slots)
         call_url = record.call_url or get_call_url(
@@ -137,7 +143,7 @@ class Turn:
             record.call_url_id,
             const.WAV_FILE,
         )
-        audio_url = get_url(record.turn_audio_base_path, record.turn_audio_path, record.call_uuid, on_prem)
+        audio_url = get_url(record.turn_audio_base_path, record.turn_audio_path, record.call_uuid, domain_url, on_prem)
         return cls(
             call_id=record.call_id,
             call_uuid=record.call_uuid,

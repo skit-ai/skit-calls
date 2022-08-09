@@ -14,9 +14,9 @@ from skit_calls.data.db import connect, postgres
 from skit_calls.data.model import Turn
 
 
-def as_turns(records, on_prem) -> Iterable[Dict[str, Any]]:
+def as_turns(records, domain_url, on_prem) -> Iterable[Dict[str, Any]]:
     for record in records:
-        yield Turn.from_record(record, on_prem).to_dict()
+        yield Turn.from_record(record, domain_url, on_prem).to_dict()
 
 
 def get_query(query_name):
@@ -82,6 +82,7 @@ def gen_random_calls(
     states: Optional[Set[str]] = None,
     limit: int = const.TURNS_LIMIT,
     delay: float = const.Q_DELAY,
+    domain_url: str = "https://cca-v2-apis.vernacular.ai",
     on_prem: bool = False,
 ):
     time.sleep(1)
@@ -112,7 +113,7 @@ def gen_random_calls(
                     with conn.cursor(cursor_factory=NamedTupleCursor) as cursor:
                         cursor.execute(query, {**turn_filters, const.CALL_IDS: batch})
                         result_set = cursor.fetchall()
-                        yield from as_turns(result_set, on_prem)
+                        yield from as_turns(result_set, domain_url, on_prem)
                         pbar.update(1)
                 i += limit
             except (SerializationFailure, OperationalError) as e:

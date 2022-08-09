@@ -85,6 +85,7 @@ IN_MEMORY = "in-memory"
 MEMORY_LIMIT = 10e7
 Q_DELAY = 0.2
 DEFAULT_API_GATEWAY_URL = "https://apigateway.vernacular.ai"
+DEFAULT_AUDIO_URL_DOMAIN = "https://cca-v2-apis.vernacular.ai"
 DEFAULT_CALL_QUANTITY = 200
 DEFAULT_TIMEZONE = "Asia/Kolkata"
 
