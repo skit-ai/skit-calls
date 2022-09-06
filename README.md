@@ -112,6 +112,7 @@ options:
 But if you already have a selected call-ids in mind:
 
 ```bash
+❯ poetry run skit-calls select -h
 usage: skit-calls select [-h] (--call-ids CALL_IDS [CALL_IDS ...] | --csv CSV) [--org-id ORG_ID] [--on-prem]
                          [--domain-url DOMAIN_URL] [--uuid-column UUID_COLUMN] [--history]
 
