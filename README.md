@@ -112,11 +112,19 @@ options:
 But if you already have a selected call-ids in mind:
 
 ```bash
-usage: skit-calls select [-h] [--call-ids CALL_IDS [CALL_IDS ...]] [--history]
+usage: skit-calls select [-h] (--call-ids CALL_IDS [CALL_IDS ...] | --csv CSV) [--org-id ORG_ID] [--on-prem]
+                         [--domain-url DOMAIN_URL] [--uuid-column UUID_COLUMN] [--history]
 
-options:
+optional arguments:
   -h, --help            show this help message and exit
   --call-ids CALL_IDS [CALL_IDS ...]
                         The call-ids to select.
+  --csv CSV             CSV file that contains the call-ids to select.
+  --org-id ORG_ID       The org for which you need the data. Required if --csv is set.
+  --on-prem             Search calls made on-prem.
+  --domain-url DOMAIN_URL
+                        The domain to use while forming public audio_urls
+  --uuid-column UUID_COLUMN
+                        The column name of the UUID column in the CSV file. Required if --csv is set.
   --history             Collect call history for each turn
 ```
