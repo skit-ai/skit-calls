@@ -44,4 +44,4 @@ jobs:
         pip install setuptools wheel twine
         python -m pip install build --user
         python -m build --sdist --wheel --outdir dist/
-        twine upload dist/*
+        twine upload --verbose dist/*

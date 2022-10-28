@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## 0.2.23
+
+- [x] update: call_type param having inbound and outbound by default
+
 ## 0.2.22
 
 - [x] update: domain-url as param to accomodate for changing domains.
