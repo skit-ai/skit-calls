@@ -125,8 +125,9 @@ def build_sample_command(parser: argparse.ArgumentParser) -> None:
     parser.add_argument(
         "--call-type",
         type=str,
+        nargs="+",
         help="The type of call to filter.",
-        default=const.INBOUND,
+        default=[const.INBOUND, const.OUTBOUND],
         choices=[const.INBOUND, const.OUTBOUND, const.CALL_TEST],
     )
     parser.add_argument(

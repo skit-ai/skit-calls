@@ -32,7 +32,7 @@ def sample(
     lang: str,
     domain_url: str,
     call_quantity: int = 200,
-    call_type: str = const.INBOUND,
+    call_type: List[str] = [const.INBOUND, const.OUTBOUND],
     on_prem: bool = False,
     ignore_callers: Optional[List[str]] = None,
     reported: bool = False,
@@ -69,7 +69,7 @@ def sample(
     :param call_quantity: Number of calls to be fetched, defaults to 200
     :type call_quantity: int, optional
 
-    :param call_type: Pick the environment (live or subtesting), defaults to const.LIVE
+    :param call_type: Pick the environment ('INBOUND' or 'OUTBOUND'), defaults to both
     :type call_type: str, optional
 
     :param ignore_callers: A list of callers that should be ignored from sampling, defaults to None

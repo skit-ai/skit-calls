@@ -1,7 +1,7 @@
 import os
 import time
 from pprint import pformat
-from typing import Any, Dict, Iterable, Set, Tuple, Optional
+from typing import Any, Dict, Iterable, Set, Tuple, Optional, List
 
 from loguru import logger
 from psycopg2.extensions import connection as Conn
@@ -29,7 +29,7 @@ def gen_random_call_ids(
     start_date: str,
     end_date: str,
     limit: int = const.DEFAULT_CALL_QUANTITY,
-    call_type: str = const.INBOUND,
+    call_type: List[str] = [const.INBOUND, const.OUTBOUND],
     reported: bool = False,
     use_case: Optional[str] = None,
     lang: Optional[str] = None,
@@ -44,7 +44,7 @@ def gen_random_call_ids(
         const.END_DATE: end_date,
         const.START_DATE: start_date,
         const.ID: id_,
-        const.CALL_TYPE: call_type,
+        const.CALL_TYPE: tuple(call_type),
         const.RESOLVED: reported_status,
         const.LANG: lang,
         const.EXCLUDED_NUMBERS: tuple(excluded_numbers),
