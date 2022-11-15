@@ -1,5 +1,10 @@
 # CHANGELOG
 
+
+## 0.2.24
+
+- [x] add: flow_id column to call context data (#16)
+
 ## 0.2.23
 
 - [x] update: call_type param having inbound and outbound by default
