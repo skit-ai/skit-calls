@@ -123,6 +123,7 @@ class Turn:
     asr_provider: MaybeString = attr.ib(kw_only=True, default=None, repr=False)
     virtual_number: MaybeString = attr.ib(kw_only=True, default=None, repr=False)
     flow_version: MaybeString = attr.ib(kw_only=True, default=None, repr=False)
+    flow_id: MaybeString = attr.ib(kw_only=True, default=None, repr=False)
 
     asr_latency: MaybeFloat = attr.ib(
         kw_only=True, default=None, converter=float_maybestr, repr=False
@@ -167,6 +168,7 @@ class Turn:
             asr_provider=record.asr_provider,
             virtual_number=record.virtual_number,
             flow_version=record.flow_version,
+            flow_id=record.flow_id,
             call_duration=record.call_duration,
         )
 
