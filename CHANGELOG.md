@@ -1,6 +1,9 @@
 # CHANGELOG
 
-## 0.2.25
+# 0.2.26
+- [x] fix: query changes for lang
+
+# 0.2.25
 - [x] update: retry logic for fetching call_ids and query changes
 
 ## 0.2.24
