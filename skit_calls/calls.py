@@ -108,7 +108,7 @@ def sample(
         flow_name=flow_name,
         excluded_numbers=ignore_callers,
         reported=reported,
-    )()
+    )
     random_call_data = query.gen_random_calls(
         random_call_ids,
         asr_provider=asr_provider,

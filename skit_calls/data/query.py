@@ -36,6 +36,7 @@ def gen_random_call_ids(
     flow_name: Optional[str] = None,
     min_duration: Optional[float] = None,
     excluded_numbers: Optional[Set[str]] = None,
+    retry_limit: int = 2,
 ):
     excluded_numbers = set(excluded_numbers) or set()
     excluded_numbers = excluded_numbers.union(const.DEFAULT_IGNORE_CALLERS_LIST)
@@ -58,14 +59,25 @@ def gen_random_call_ids(
 
     query = get_query(const.RANDOM_CALL_ID_QUERY)
 
-    @postgres()
-    def on_connect(conn: Conn):
-        with conn.cursor() as cursor:
-            cursor.execute(query, call_filters)
-            all_ids = cursor.fetchall()
-        return tuple(id_[0] for id_ in all_ids)
-
-    return on_connect
+    tries = 0
+    call_ids = ()
+    
+    while tries <= retry_limit:
+        try:
+            with connect() as conn:
+                with conn.cursor() as cursor:
+                    cursor.execute(query, call_filters)
+                    all_ids = cursor.fetchall()
+                    return tuple(id_[0] for id_ in all_ids)
+        except OperationalError as e:
+                logger.warning(e)
+                logger.warning("retrying to fetch call ids")
+                time.sleep(2)
+                tries += 1
+                if tries > retry_limit:
+                    raise ValueError("retry limit exceeded for this query to get call ids")
+    
+    return call_ids
 
 
 def get_call_ids_from_uuids(id_: int, uuids: Tuple[str]) -> Tuple[int]:
