@@ -70,11 +70,11 @@ def process_date_filters(
 
     start_minute_offset, end_minute_offset = 0, 0
 
-    if len(start_time_offset) == 4:
+    if len(str(start_time_offset)) == 4:
         start_minute_offset = start_time_offset % 100
         start_time_offset = start_time_offset // 100
 
-    if len(end_time_offset) == 4:
+    if len(str(end_time_offset)) == 4:
         end_minute_offset = end_time_offset % 100
         end_time_offset = end_time_offset // 100
 
