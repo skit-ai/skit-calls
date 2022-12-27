@@ -1,5 +1,8 @@
 # CHANGELOG
 
+# 0.2.27
+- [x] update: query changes to sample calls on min_duration
+
 # 0.2.26
 - [x] fix: query changes for lang
 
