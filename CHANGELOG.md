@@ -1,5 +1,8 @@
 # CHANGELOG
 
+# 0.2.28
+- [x] update: secrets
+
 # 0.2.27
 - [x] update: query changes to sample calls on min_duration
 
