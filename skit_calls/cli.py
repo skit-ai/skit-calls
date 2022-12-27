@@ -8,7 +8,7 @@ import pandas as pd
 import pytz
 from loguru import logger
 
-from skit_calls import __version__, calls
+from skit_calls import calls
 from skit_calls import constants as const
 from skit_calls import utils
 
@@ -96,8 +96,6 @@ def process_date_filters(
     return start_date, end_date
 
 
-def get_version():
-    return __version__
 
 
 def build_sample_command(parser: argparse.ArgumentParser) -> None:

@@ -20,7 +20,7 @@ def as_turns(records, domain_url, on_prem) -> Iterable[Dict[str, Any]]:
 
 
 def get_query(query_name):
-    with open(os.environ[query_name]) as handle:
+    with open(os.getenv(query_name)) as handle:
         return handle.read()
 
 

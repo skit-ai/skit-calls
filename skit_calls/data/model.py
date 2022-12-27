@@ -140,7 +140,7 @@ class Turn:
         intent_name, intent_score, slots = prediction2intent(record.prediction or {})
         entities = slots2entities(slots)
         call_url = record.call_url or get_call_url(
-            os.environ[const.CDN_RECORDINGS_BASE_PATH],
+            os.getenv(const.CDN_RECORDINGS_BASE_PATH),
             record.call_url_id,
             const.WAV_FILE,
         )

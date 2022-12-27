@@ -1,5 +1,8 @@
 # CHANGELOG
 
+# 0.2.29
+- [x] add: minute offset to def process_date_filters (#17)
+
 # 0.2.28
 - [x] update: secrets
 
