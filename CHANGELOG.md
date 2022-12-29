@@ -1,5 +1,8 @@
 # CHANGELOG
 
+0.2.30
+- [x] fix: granular time filters not getting applied
+
 # 0.2.29
 - [x] add: minute offset to def process_date_filters (#17)
 
