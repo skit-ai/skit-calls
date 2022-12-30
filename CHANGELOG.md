@@ -1,5 +1,8 @@
 # CHANGELOG
 
+0.2.31
+- [x] fix: granular time filters not getting applied - date offset
+
 0.2.30
 - [x] fix: granular time filters not getting applied
 
