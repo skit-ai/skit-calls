@@ -80,16 +80,14 @@ def process_date_filters(
 
     if not start_date:
         start_date = datetime.combine(today, datetime.min.time())
-    start_date += timedelta(days=start_date_offset, hours=start_time_offset, minutes=start_minute_offset)
-    
     if not end_date:
-        end_date = datetime.combine(today, datetime.max.time())
-        end_date = end_date + timedelta(
-            days=end_date_offset, hours=end_time_offset, minutes=end_minute_offset
-        )
-    else:
-        end_date = end_date + timedelta(hours=end_time_offset or 23, minutes=end_minute_offset or 59, seconds=59)
-
+        end_date = datetime.combine(today, datetime.min.time())
+    start_date += timedelta(
+        days=start_date_offset, hours=start_time_offset, minutes=start_minute_offset
+    )
+    end_date += timedelta(
+        days=end_date_offset, hours=end_time_offset or 23, minutes=end_minute_offset or 59, seconds=59
+    )
     start_date = start_date.replace(tzinfo=pytz.timezone(timezone)).isoformat()
     end_date = end_date.replace(tzinfo=pytz.timezone(timezone)).isoformat()
     return start_date, end_date
