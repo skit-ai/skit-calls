@@ -216,10 +216,7 @@ def build_select_command(parser: argparse.ArgumentParser) -> None:
 
 
 def build_cli():
-    version = get_version()
-    parser = argparse.ArgumentParser(
-        description=const.DESCRIPTION.format(version={version})
-    )
+    parser = argparse.ArgumentParser()
     parser.add_argument(
         "-v", "--verbose", action="count", default=4, help="Increase verbosity"
     )

@@ -85,8 +85,7 @@ def get_url(
     on_prem: bool = False
 ) -> MaybeString:
     audio_url = urljoin(os.path.join(base, ""), unquote(path).lstrip("/"))
-    fsm_url = urljoin(domain_url, f"calls-with-cors/{call_uuid}/audio/?audio_url={audio_url}&audio_path={unquote(path)}")
-    return audio_url if on_prem else fsm_url
+    return audio_url
 
 
 @attr.s(slots=True, weakref_slot=False)

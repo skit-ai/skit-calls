@@ -71,7 +71,7 @@ CALL_HISTORY = "call_history"
 
 # ------------------------- cli -----------------------------------
 DESCRIPTION = """
-Skit.ai's calls library {version}.
+Skit.ai's calls library.
 
 We provide means to sample calls and conversations from a 
 specified environment.

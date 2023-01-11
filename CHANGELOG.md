@@ -1,5 +1,8 @@
 # CHANGELOG
 
+0.2.32
+- [x] update: `calls-with-cors` path removal for audio_url
+
 0.2.31
 - [x] fix: granular time filters not getting applied - date offset
 
