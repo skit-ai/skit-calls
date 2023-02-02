@@ -35,6 +35,20 @@ def test_process_date_filters_time_offset():
     assert end_date == '2022-12-28T14:59:59+05:53'
     
 
+def test_process_date_filters_past_date_offset():
+    fake_start_date_offset = -1
+    fake_end_date_offset = -1
+    
+    start_date, end_date = process_date_filters(start_date_offset=fake_start_date_offset, end_date_offset=fake_end_date_offset)
+    assert start_date == (datetime.combine(date.today(), datetime.min.time()) + timedelta(
+            days=-1
+        )).replace(tzinfo=pytz.timezone(const.DEFAULT_TIMEZONE)).isoformat()
+    assert end_date == (datetime.combine(date.today(), datetime.min.time()) + timedelta(
+            days=-1, hours=23, minutes=59, seconds=59
+        )).replace(tzinfo=pytz.timezone(const.DEFAULT_TIMEZONE)).isoformat()
+    print(start_date, end_date)
+
+
 def test_process_date_filters_past_time_offset():
     fake_start_date_offset = -1
     fake_end_date_offset = -1
