@@ -33,7 +33,7 @@ def sample(
     domain_url: str,
     call_quantity: int = 200,
     call_type: List[str] = [const.INBOUND, const.OUTBOUND],
-    on_prem: bool = False,
+    use_fsm_url: bool = False,
     ignore_callers: Optional[List[str]] = None,
     reported: bool = False,
     use_case: Optional[str] = None,
@@ -63,8 +63,8 @@ def sample(
     :param lang_code: A language code.
     :type lang_code: str
 
-    :param on_prem: Whether to use on-prem or on-cloud.
-    :type on_prem: bool
+    :param use_fsm_url: Whether to use turn audio url from fsm or s3 path.
+    :type use_fsm_url: bool
 
     :param call_quantity: Number of calls to be fetched, defaults to 200
     :type call_quantity: int, optional
@@ -116,7 +116,7 @@ def sample(
         limit=batch_turns,
         delay=delay,
         domain_url=domain_url,
-        on_prem=on_prem,
+        use_fsm_url=use_fsm_url,
     )
     if on_disk:
         return save_turns_on_disk(random_call_data)

@@ -146,9 +146,9 @@ def build_sample_command(parser: argparse.ArgumentParser) -> None:
         default=const.DEFAULT_AUDIO_URL_DOMAIN,
     )
     parser.add_argument(
-        "--on-prem",
+        "--use-fsm-url",
         action="store_true",
-        help="Search calls made on-prem.",
+        help="Whether to use turn audio url from fsm or s3 path.",
         default=False,
     )
     parser.add_argument(
@@ -192,9 +192,9 @@ def build_select_command(parser: argparse.ArgumentParser) -> None:
         help="The org for which you need the data. Required if --csv is set.",
     )
     parser.add_argument(
-        "--on-prem",
+        "--use-fsm-url",
         action="store_true",
-        help="Search calls made on-prem.",
+        help="Whether to use turn audio url from fsm or s3 path.",
         default=False,
     )
     parser.add_argument(
@@ -274,7 +274,7 @@ def random_sample_calls(args: argparse.Namespace) -> Union[str, pd.DataFrame]:
         call_quantity=args.call_quantity,
         call_type=args.call_type,
         ignore_callers=args.ignore_callers,
-        on_prem=args.on_prem,
+        use_fsm_url=args.use_fsm_url,
         reported=args.reported,
         use_case=args.use_case,
         flow_name=args.flow_name,

@@ -82,10 +82,14 @@ def get_url(
     path: MaybeString,
     call_uuid: str,
     domain_url: str,
-    on_prem: bool = False
+    use_fsm_url: bool = False
 ) -> MaybeString:
+    # when use_fsm_url is False -> get audio url from s3
+    # else use fsm url
+    
     audio_url = urljoin(os.path.join(base, ""), unquote(path).lstrip("/"))
-    return audio_url
+    fsm_url = urljoin(domain_url, f"calls-with-cors/{call_uuid}/audio/?audio_url={audio_url}&audio_path={unquote(path)}")
+    return fsm_url if use_fsm_url else audio_url
 
 
 @attr.s(slots=True, weakref_slot=False)
@@ -135,7 +139,7 @@ class Turn:
     )
 
     @classmethod
-    def from_record(cls, record: namedtuple, domain_url: str, on_prem: bool = False) -> "Turn":
+    def from_record(cls, record: namedtuple, domain_url: str, use_fsm_url: bool = False) -> "Turn":
         intent_name, intent_score, slots = prediction2intent(record.prediction or {})
         entities = slots2entities(slots)
         call_url = record.call_url or get_call_url(
@@ -143,7 +147,7 @@ class Turn:
             record.call_url_id,
             const.WAV_FILE,
         )
-        audio_url = get_url(record.turn_audio_base_path, record.turn_audio_path, record.call_uuid, domain_url, on_prem)
+        audio_url = get_url(record.turn_audio_base_path, record.turn_audio_path, record.call_uuid, domain_url, use_fsm_url)
         return cls(
             call_id=record.call_id,
             call_uuid=record.call_uuid,

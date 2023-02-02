@@ -14,9 +14,9 @@ from skit_calls.data.db import connect, postgres
 from skit_calls.data.model import Turn
 
 
-def as_turns(records, domain_url, on_prem) -> Iterable[Dict[str, Any]]:
+def as_turns(records, domain_url, use_fsm_url) -> Iterable[Dict[str, Any]]:
     for record in records:
-        yield Turn.from_record(record, domain_url, on_prem).to_dict()
+        yield Turn.from_record(record, domain_url, use_fsm_url).to_dict()
 
 
 def get_query(query_name):
@@ -95,7 +95,7 @@ def gen_random_calls(
     limit: int = const.TURNS_LIMIT,
     delay: float = const.Q_DELAY,
     domain_url: str = const.DEFAULT_AUDIO_URL_DOMAIN,
-    on_prem: bool = False,
+    use_fsm_url: bool = False,
 ):
     time.sleep(1)
     query = get_query(const.RANDOM_CALL_DATA_QUERY)
@@ -125,7 +125,7 @@ def gen_random_calls(
                     with conn.cursor(cursor_factory=NamedTupleCursor) as cursor:
                         cursor.execute(query, {**turn_filters, const.CALL_IDS: batch})
                         result_set = cursor.fetchall()
-                        yield from as_turns(result_set, domain_url, on_prem)
+                        yield from as_turns(result_set, domain_url, use_fsm_url)
                         pbar.update(1)
                 i += limit
             except (SerializationFailure, OperationalError) as e:

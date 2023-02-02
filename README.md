@@ -113,7 +113,7 @@ But if you already have a selected call-ids in mind:
 
 ```bash
 ❯ poetry run skit-calls select -h
-usage: skit-calls select [-h] (--call-ids CALL_IDS [CALL_IDS ...] | --csv CSV) [--org-id ORG_ID] [--on-prem]
+usage: skit-calls select [-h] (--call-ids CALL_IDS [CALL_IDS ...] | --csv CSV) [--org-id ORG_ID] [--use-fsm-url]
                          [--domain-url DOMAIN_URL] [--uuid-column UUID_COLUMN] [--history]
 
 optional arguments:
@@ -122,7 +122,7 @@ optional arguments:
                         The call-ids to select.
   --csv CSV             CSV file that contains the call-ids to select.
   --org-id ORG_ID       The org for which you need the data. Required if --csv is set.
-  --on-prem             Search calls made on-prem.
+  --use-fsm-url         Whether to use turn audio url from fsm or s3 path.
   --domain-url DOMAIN_URL
                         The domain to use while forming public audio_urls
   --uuid-column UUID_COLUMN
