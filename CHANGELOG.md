@@ -1,5 +1,8 @@
 # CHANGELOG
 
+0.2.34
+- add: new columns for randomly sampled calls - call_type, disposition, call_end_status, flow_name
+
 0.2.33
 - update: deprecated --on-prem, now using --use-fsm-url flag for deciding turn audio uri paths should be from fsm or s3 bucket directly
 
