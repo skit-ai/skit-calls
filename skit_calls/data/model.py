@@ -122,11 +122,15 @@ class Turn:
     entities: Entities = attr.ib(kw_only=True, factory=list, repr=False)
 
     call_url: MaybeString = attr.ib(kw_only=True, repr=False, default=None)
+    call_type: MaybeString = attr.ib(kw_only=True, default=None, repr=False)
     language: MaybeString = attr.ib(kw_only=True, default=None)
     asr_provider: MaybeString = attr.ib(kw_only=True, default=None, repr=False)
+    call_end_status: MaybeString = attr.ib(kw_only=True, default=None, repr=False)
+    disposition: MaybeString = attr.ib(kw_only=True, default=None, repr=False)
     virtual_number: MaybeString = attr.ib(kw_only=True, default=None, repr=False)
     flow_version: MaybeString = attr.ib(kw_only=True, default=None, repr=False)
     flow_id: MaybeString = attr.ib(kw_only=True, default=None, repr=False)
+    flow_name: MaybeString = attr.ib(kw_only=True, default=None, repr=False)
 
     asr_latency: MaybeFloat = attr.ib(
         kw_only=True, default=None, converter=float_maybestr, repr=False
@@ -155,11 +159,14 @@ class Turn:
             conversation_uuid=record.conversation_uuid,
             audio_url=audio_url,
             call_url=call_url,
+            call_type=record.call_type,
+            disposition=record.disposition,
             reftime=record.reftime,
             state=record.state,
             prediction=record.prediction,
             utterances=record.utterances,
             context=record.context,
+            call_end_status=record.call_end_status,
             intents_info=record.intents_info,
             intent=intent_name,
             intent_score=intent_score,
@@ -172,6 +179,7 @@ class Turn:
             virtual_number=record.virtual_number,
             flow_version=record.flow_version,
             flow_id=record.flow_id,
+            flow_name=record.flow_name,
             call_duration=record.call_duration,
         )
 
