@@ -1,5 +1,10 @@
 # CHANGELOG
 
+
+0.2.34
+- add: query modification for turns sampling based on list of intents (#18)
+
+
 0.2.34
 - add: new columns for randomly sampled calls - call_type, disposition, call_end_status, flow_name
 
