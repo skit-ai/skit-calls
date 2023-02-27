@@ -91,6 +91,7 @@ def get_call_ids_from_uuids(id_: int, uuids: Tuple[str]) -> Tuple[int]:
 def gen_random_calls(
     call_ids: Tuple[int],
     asr_provider: Optional[str] = None,
+    intents: Optional[Set[str]] = None,
     states: Optional[Set[str]] = None,
     limit: int = const.TURNS_LIMIT,
     delay: float = const.Q_DELAY,
@@ -100,11 +101,13 @@ def gen_random_calls(
     time.sleep(1)
     query = get_query(const.RANDOM_CALL_DATA_QUERY)
     states = tuple(set(states or [None]))
+    intents = tuple(set(intents or [None]))
     turn_filters = {
         const.ASR_PROVIDER: asr_provider,
         const.CONVERSATION_TYPES: (const.UCASE_INPUT,),
         const.CONVERSATION_SUB_TYPES: (const.UCASE_AUDIO,),
         const.STATES: states,
+        const.INTENTS: intents,
     }
     logger.debug(f"call_filters={pformat(turn_filters)}")
 
