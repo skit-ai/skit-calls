@@ -171,7 +171,13 @@ def build_sample_command(parser: argparse.ArgumentParser) -> None:
     parser.add_argument(
         "--asr-provider", help="Filter calls served via a specific ASR provider."
     )
-
+    parser.add_argument(
+        "--intents",
+        type=str,
+        nargs="*",
+        help="A comma separated list of intents to keep turns from, and remove all else.",
+        default=[],
+    )
     parser.add_argument(
         "--states",
         type=str,
@@ -280,6 +286,7 @@ def random_sample_calls(args: argparse.Namespace) -> Union[str, pd.DataFrame]:
         flow_name=args.flow_name,
         min_duration=args.min_audio_duration,
         asr_provider=args.asr_provider,
+        intents=args.intents,
         states=args.states,
         on_disk=args.on_disk,
         batch_turns=args.batch_turns,

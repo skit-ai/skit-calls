@@ -41,6 +41,7 @@ def sample(
     min_duration: Optional[float] = None,
     asr_provider: Optional[str] = None,
     states: Optional[List[str]] = None,
+    intents: Optional[List[str]] = None,
     on_disk: bool = True,
     batch_turns: int = const.TURNS_LIMIT,
     delay: float = const.Q_DELAY,
@@ -89,6 +90,9 @@ def sample(
 
     :param states: A list of states that should be picked from sampling, defaults to None
     :type ignore_callers: Optional[List[str]], optional
+    
+    :param intents: A list of intents that should be picked from sampling, defaults to None
+    :type intents: Optional[List[str]], optional
 
     :param on_disk: "in-memory" (False) vs "files" (True), defaults to None
     :type save: Optional[str], optional
@@ -112,6 +116,7 @@ def sample(
     random_call_data = query.gen_random_calls(
         random_call_ids,
         asr_provider=asr_provider,
+        intents=intents,
         states=states,
         limit=batch_turns,
         delay=delay,
