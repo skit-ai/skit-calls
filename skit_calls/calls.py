@@ -1,6 +1,6 @@
 import csv
 import tempfile
-from typing import Any, Dict, Iterable, List, Optional, Union
+from typing import Any, Dict, Iterable, List, Optional, Union, Set
 
 import pandas as pd
 from loguru import logger
@@ -26,16 +26,17 @@ def save_turns_on_disk(stream: Iterable[Dict[str, Any]]) -> str:
 
 
 def sample(
-    org_id: str,
     start_date: str,
     end_date: str,
     lang: str,
     domain_url: str,
+    org_ids: Optional[Set[str]] = None,
     call_quantity: int = 200,
     call_type: List[str] = [const.INBOUND, const.OUTBOUND],
     use_fsm_url: bool = False,
     ignore_callers: Optional[List[str]] = None,
     reported: bool = False,
+    template_id: Optional[int] = None,
     use_case: Optional[str] = None,
     flow_name: Optional[str] = None,
     min_duration: Optional[float] = None,
@@ -101,13 +102,14 @@ def sample(
     :rtype: str
     """
     random_call_ids = query.gen_random_call_ids(
-        org_id,
         start_date,
         end_date,
+        ids_=org_ids,
         limit=call_quantity,
         call_type=call_type,
         lang=lang,
         min_duration=min_duration,
+        template_id=template_id,
         use_case=use_case,
         flow_name=flow_name,
         excluded_numbers=ignore_callers,
@@ -130,7 +132,7 @@ def sample(
 
 def select(
     call_ids: Optional[List[int]] = None,
-    org_id: Optional[int] = None,
+    org_ids: Optional[Set[int]] = None,
     csv_file: Optional[str] = None,
     uuid_col: Optional[str] = None,
     call_history: bool = False,
@@ -150,9 +152,9 @@ def select(
     :rtype: str
     """
     try:
-        if csv_file and uuid_col and org_id:
+        if csv_file and uuid_col and org_ids:
             df = pd.read_csv(csv_file)
-            call_ids = query.get_call_ids_from_uuids(org_id, tuple(df[uuid_col].unique()))
+            call_ids = query.get_call_ids_from_uuids(org_ids, tuple(df[uuid_col].unique()))
         else:
             raise ValueError("Both csv_file or uuid_column must be provided.")
         if not call_ids:

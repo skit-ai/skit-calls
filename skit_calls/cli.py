@@ -103,9 +103,11 @@ def build_sample_command(parser: argparse.ArgumentParser) -> None:
         required=True,
     )
     parser.add_argument(
-        "--org-id",
+        "--org-ids",
         type=str,
-        help="The org for which you need the data.",
+        nargs="*",
+        help="A comma separated list of org ids for which you need the data ",
+        default=[]
     )
     parser.add_argument(
         "--start-date",
@@ -161,6 +163,7 @@ def build_sample_command(parser: argparse.ArgumentParser) -> None:
     parser.add_argument(
         "--reported", action="store_true", help="Search only reported calls."
     )
+    parser.add_argument("--template-id", help="Filter calls by template id.")
     parser.add_argument("--use-case", help="Filter calls by use-case.")
     parser.add_argument("--flow-name", help="Filter calls by flow-name.")
     parser.add_argument(
@@ -194,8 +197,11 @@ def build_select_command(parser: argparse.ArgumentParser) -> None:
     )
     group.add_argument("--csv", help="CSV file that contains the call-ids to select.")
     parser.add_argument(
-        "--org-id",
-        help="The org for which you need the data. Required if --csv is set.",
+        "--org-ids",
+        type=str,
+        nargs="*",
+        help="A comma separated list of org ids for which you need the data. Required if --csv is set.",
+        default=[]
     )
     parser.add_argument(
         "--use-fsm-url",
@@ -272,16 +278,17 @@ def random_sample_calls(args: argparse.Namespace) -> Union[str, pd.DataFrame]:
     validate_date_ranges(args.start_date, args.end_date)
     start = time.time()
     maybe_df = calls.sample(
-        args.org_id,
         args.start_date,
         args.end_date,
         args.lang,
-        domain_url=args.domain_url,
+        args.domain_url,
+        org_ids=args.org_ids,
         call_quantity=args.call_quantity,
         call_type=args.call_type,
         ignore_callers=args.ignore_callers,
         use_fsm_url=args.use_fsm_url,
         reported=args.reported,
+        template_id=args.template_id,
         use_case=args.use_case,
         flow_name=args.flow_name,
         min_duration=args.min_audio_duration,
@@ -305,7 +312,7 @@ def cmd_to_str(args: argparse.Namespace) -> str:
     elif args.command == "select":
         maybe_df = calls.select(
             args.call_ids,
-            args.org_id,
+            args.org_ids,
             args.csv,
             args.uuid_column,
             args.history,
