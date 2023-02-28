@@ -1,7 +1,11 @@
 # CHANGELOG
 
 
-0.2.34
+0.2.36
+- add: --org-id now changed to --org-ids which supports multiple org-id, and --template-id can be used now for sampling call
+
+
+0.2.35
 - add: query modification for turns sampling based on list of intents (#18)
 
 
