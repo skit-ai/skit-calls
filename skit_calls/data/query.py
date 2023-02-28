@@ -25,26 +25,29 @@ def get_query(query_name):
 
 
 def gen_random_call_ids(
-    id_: int,
     start_date: str,
     end_date: str,
+    ids_: Optional[Set[str]] = None,
     limit: int = const.DEFAULT_CALL_QUANTITY,
     call_type: List[str] = [const.INBOUND, const.OUTBOUND],
     reported: bool = False,
     use_case: Optional[str] = None,
     lang: Optional[str] = None,
+    template_id: Optional[int] = None,
     flow_name: Optional[str] = None,
     min_duration: Optional[float] = None,
     excluded_numbers: Optional[Set[str]] = None,
     retry_limit: int = 2,
 ):
+    print(ids_)
     excluded_numbers = set(excluded_numbers) or set()
+    ids_ = set(ids_) or set()
     excluded_numbers = excluded_numbers.union(const.DEFAULT_IGNORE_CALLERS_LIST)
     reported_status = 0 if reported else None
     call_filters = {
         const.END_DATE: end_date,
         const.START_DATE: start_date,
-        const.ID: id_,
+        const.ID: tuple(ids_),
         const.CALL_TYPE: tuple(call_type),
         const.RESOLVED: reported_status,
         const.LANG: lang,
@@ -53,6 +56,7 @@ def gen_random_call_ids(
         const.USE_CASE: use_case,
         const.FLOW_NAME: flow_name,
         const.LIMIT: limit + const.MARGIN * limit,
+        const.TEMPLATE_ID: template_id,
     }
 
     logger.debug(f"call_filters={pformat(call_filters)} | {limit=}")
@@ -80,11 +84,12 @@ def gen_random_call_ids(
     return call_ids
 
 
-def get_call_ids_from_uuids(id_: int, uuids: Tuple[str]) -> Tuple[int]:
+def get_call_ids_from_uuids(uuids: Tuple[str], ids_: Optional[Set[int]]) -> Tuple[int]:
     query = get_query(const.CALL_IDS_FROM_UUIDS_QUERY)
+    ids_ = set(ids_) or set()
     with connect() as conn:
         with conn.cursor() as cursor:
-            cursor.execute(query, {const.UUID: uuids, const.ID: id_})
+            cursor.execute(query, {const.UUID: uuids, const.ID: ids_})
             return tuple(id_[0] for id_ in cursor.fetchall())
 
 

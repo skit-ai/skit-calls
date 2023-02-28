@@ -76,7 +76,7 @@ To get random samples:
 
 ```bash
 ❯ poetry run skit-calls sample -h
-usage: skit-calls sample [-h] --lang LANG [--org-id ORG_ID] --start-date START_DATE
+usage: skit-calls sample [-h] --lang LANG [--org-ids [ORG_IDS ...]] --start-date START_DATE
                          [--end-date END_DATE] [--timezone TIMEZONE]
                          [--call-quantity CALL_QUANTITY]
                          [--call-type {INBOUND,OUTBOUND,CALL_TEST}]
@@ -88,7 +88,7 @@ usage: skit-calls sample [-h] --lang LANG [--org-id ORG_ID] --start-date START_D
 options:
   -h, --help            show this help message and exit
   --lang LANG           Search calls made in the given language.
-  --org-id ORG_ID       The org for which you need the data.
+  --org-ids ORG_IDS     The orgs for which you need the data.
   --start-date START_DATE
                         Search calls made after the given date (YYYY-MM-DD).
   --end-date END_DATE   Search calls made before the given date.
@@ -113,7 +113,7 @@ But if you already have a selected call-ids in mind:
 
 ```bash
 ❯ poetry run skit-calls select -h
-usage: skit-calls select [-h] (--call-ids CALL_IDS [CALL_IDS ...] | --csv CSV) [--org-id ORG_ID] [--use-fsm-url]
+usage: skit-calls select [-h] (--call-ids CALL_IDS [CALL_IDS ...] | --csv CSV) [--org-ids [ORG_IDs ...]] [--use-fsm-url]
                          [--domain-url DOMAIN_URL] [--uuid-column UUID_COLUMN] [--history]
 
 optional arguments:
@@ -121,7 +121,7 @@ optional arguments:
   --call-ids CALL_IDS [CALL_IDS ...]
                         The call-ids to select.
   --csv CSV             CSV file that contains the call-ids to select.
-  --org-id ORG_ID       The org for which you need the data. Required if --csv is set.
+  --org-ids ORG_IDS     The orgs for which you need the data.
   --use-fsm-url         Whether to use turn audio url from fsm or s3 path.
   --domain-url DOMAIN_URL
                         The domain to use while forming public audio_urls
