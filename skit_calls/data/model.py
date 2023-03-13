@@ -44,6 +44,28 @@ def jsonify_utterances(json_string: MaybeString) -> Optional[Thing]:
             return [utterances]
     return None
 
+def format_utterances(json_string: MaybeString) -> MaybeString:
+    req_utterances: str = lambda utterances: "\n".join([alternative[const.TRANSCRIPT] for alternative in utterances])
+    utterances = jsonify_utterances(json_string)
+    if not utterances:
+        return None
+    if isinstance(utterances, list):
+        if isinstance(utterances[0], list):
+            return req_utterances(utterances[0])
+        if isinstance(utterances[0], dict):
+            return req_utterances(utterances)
+    return None
+
+def extract_primary_utterance(json_string: MaybeString) -> MaybeString:
+    utterances = jsonify_utterances(json_string)
+    if not utterances:
+        return None
+    if isinstance(utterances, list):
+        if isinstance(utterances[0], list):
+            return utterances[0][0][const.TRANSCRIPT]
+        if isinstance(utterances[0], dict):
+            return utterances[0][const.TRANSCRIPT]
+    return None
 
 def jsonify_maybestr(json_string: MaybeString) -> Optional[Thing]:
     if not json_string:
@@ -68,6 +90,8 @@ def print_utterance(utterances: Utterances) -> str:
         return "None"
     return utterances[0][0][const.TRANSCRIPT]
 
+def extract_bot_response(json_str: MaybeString) -> MaybeString:
+    return jsonify_maybestr(json_str).get(const.BOT_RESPONSE, None) if json_str else None
 
 def get_call_url(
     base: MaybeString, path: MaybeString, extension: MaybeString = None
@@ -105,9 +129,17 @@ class Turn:
     utterances: Utterances = attr.ib(
         kw_only=True, factory=list, converter=jsonify_utterances, repr=print_utterance
     )
+    format_utterances: MaybeString = attr.ib(
+        kw_only=True, factory=str, converter=format_utterances, repr=False
+    )
+    primary_utterance: MaybeString = attr.ib(
+        kw_only=True, factory=str, converter=extract_primary_utterance, repr=False
+    )
     context: Optional[Thing] = attr.ib(
         kw_only=True, factory=dict, converter=jsonify_maybestr, repr=False
     )
+    bot_response: MaybeString = attr.ib(kw_only=True, default=None, converter=extract_bot_response, repr=False)
+
     intents_info: Things = attr.ib(
         kw_only=True, factory=list, converter=jsonify_maybestr, repr=False
     )
@@ -165,7 +197,10 @@ class Turn:
             state=record.state,
             prediction=record.prediction,
             utterances=record.utterances,
+            primary_utterance=record.utterances,
+            format_utterances=record.utterances,
             context=record.context,
+            bot_response=record.context,
             call_end_status=record.call_end_status,
             intents_info=record.intents_info,
             intent=intent_name,
