@@ -1,5 +1,7 @@
 import json
 import os
+import pytz
+import pandas as pd
 from collections import namedtuple
 from datetime import datetime
 from typing import Any, Dict, List, Tuple, Optional
@@ -116,6 +118,16 @@ def get_url(
     return fsm_url if use_fsm_url else audio_url
 
 
+def get_readable_reftime(reftime: str) -> str:
+
+    timestamp_with_tz = pd.to_datetime(reftime)
+
+    if str(timestamp_with_tz.tz) == str(pytz.UTC):
+        new_tz = const.DEFAULT_TIMEZONE
+        timestamp_with_tz = timestamp_with_tz.astimezone(new_tz)
+
+    return timestamp_with_tz.strftime("%d-%b-%Y %I:%M %p")
+
 @attr.s(slots=True, weakref_slot=False)
 class Turn:
     call_id: str = attr.ib(kw_only=True, repr=True, converter=str)
@@ -124,6 +136,7 @@ class Turn:
     conversation_uuid: str = attr.ib(kw_only=True, repr=False)
     audio_url: str = attr.ib(kw_only=True, repr=False)
     reftime: str = attr.ib(kw_only=True, converter=datetime.isoformat, repr=False)
+    readable_reftime : str = attr.ib(kw_only=True)
     state: str = attr.ib(kw_only=True, repr=False)
 
     utterances: Utterances = attr.ib(
@@ -184,6 +197,10 @@ class Turn:
             const.WAV_FILE,
         )
         audio_url = get_url(record.turn_audio_base_path, record.turn_audio_path, record.call_uuid, domain_url, use_fsm_url)
+        readable_reftime = get_readable_reftime(record.reftime)
+
+
+
         return cls(
             call_id=record.call_id,
             call_uuid=record.call_uuid,
@@ -194,6 +211,7 @@ class Turn:
             call_type=record.call_type,
             disposition=record.disposition,
             reftime=record.reftime,
+            readable_reftime=readable_reftime,
             state=record.state,
             prediction=record.prediction,
             utterances=record.utterances,
