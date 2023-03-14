@@ -46,6 +46,7 @@ def sample(
     on_disk: bool = True,
     batch_turns: int = const.TURNS_LIMIT,
     delay: float = const.Q_DELAY,
+    timezone: str = const.DEFAULT_TIMEZONE,
 ) -> Union[str, pd.DataFrame]:
     """
     Sample calls.
@@ -90,13 +91,16 @@ def sample(
     :type custom_search_value: Optional[str], optional
 
     :param states: A list of states that should be picked from sampling, defaults to None
-    :type ignore_callers: Optional[List[str]], optional
+    :type states: Optional[List[str]], optional
     
     :param intents: A list of intents that should be picked from sampling, defaults to None
     :type intents: Optional[List[str]], optional
 
     :param on_disk: "in-memory" (False) vs "files" (True), defaults to None
-    :type save: Optional[str], optional
+    :type on_disk: Optional[str], optional
+
+    :param timezone: Timezone for the sampling, defaults to "Asia/Kolkata"
+    :type timezone: str, optional
 
     :return: A directory path if save is set to "files" otherwise path to a file.
     :rtype: str
@@ -124,6 +128,7 @@ def sample(
         delay=delay,
         domain_url=domain_url,
         use_fsm_url=use_fsm_url,
+        timezone=timezone,
     )
     if on_disk:
         return save_turns_on_disk(random_call_data)

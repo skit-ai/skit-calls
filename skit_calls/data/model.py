@@ -1,5 +1,6 @@
 import json
 import os
+import pytz
 from collections import namedtuple
 from datetime import datetime
 from typing import Any, Dict, List, Tuple, Optional
@@ -175,7 +176,7 @@ class Turn:
     )
 
     @classmethod
-    def from_record(cls, record: namedtuple, domain_url: str, use_fsm_url: bool = False) -> "Turn":
+    def from_record(cls, record: namedtuple, domain_url: str, use_fsm_url: bool = False, timezone: str = const.DEFAULT_TIMEZONE) -> "Turn":
         intent_name, intent_score, slots = prediction2intent(record.prediction or {})
         entities = slots2entities(slots)
         call_url = record.call_url or get_call_url(
@@ -184,6 +185,7 @@ class Turn:
             const.WAV_FILE,
         )
         audio_url = get_url(record.turn_audio_base_path, record.turn_audio_path, record.call_uuid, domain_url, use_fsm_url)
+        reftime = record.reftime.astimezone(pytz.timezone(timezone))
         return cls(
             call_id=record.call_id,
             call_uuid=record.call_uuid,
@@ -193,7 +195,7 @@ class Turn:
             call_url=call_url,
             call_type=record.call_type,
             disposition=record.disposition,
-            reftime=record.reftime,
+            reftime=reftime,
             state=record.state,
             prediction=record.prediction,
             utterances=record.utterances,
