@@ -1,5 +1,8 @@
 # CHANGELOG
 
+0.2.38
+- add: readable reftime as a column for skit-calls
+
 0.2.37
 - add: new fields for downstream annotation changes
 
