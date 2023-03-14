@@ -273,7 +273,7 @@ def build_cli():
 
 def random_sample_calls(args: argparse.Namespace) -> Union[str, pd.DataFrame]:
     args.start_date, args.end_date = process_date_filters(
-        args.start_date, args.end_date
+        args.start_date, args.end_date, timezone=args.timezone
     )
     validate_date_ranges(args.start_date, args.end_date)
     start = time.time()
@@ -298,6 +298,7 @@ def random_sample_calls(args: argparse.Namespace) -> Union[str, pd.DataFrame]:
         on_disk=args.on_disk,
         batch_turns=args.batch_turns,
         delay=args.delay,
+        timezone=args.timezone,
     )
     logger.info(f"Finished in {time.time() - start:.2f} seconds")
     return maybe_df
