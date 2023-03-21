@@ -1,5 +1,8 @@
 # CHANGELOG
 
+0.2.39
+- fix: failing when org-ids are not provided but template-id is provided while sampling calls
+
 0.2.38
 - add: readable reftime as a column for skit-calls
 
