@@ -178,6 +178,11 @@ class Turn:
     flow_version: MaybeString = attr.ib(kw_only=True, default=None, repr=False)
     flow_id: MaybeString = attr.ib(kw_only=True, default=None, repr=False)
     flow_name: MaybeString = attr.ib(kw_only=True, default=None, repr=False)
+    flow_uuid: str = attr.ib(kw_only=True, repr=False)
+
+    template_id: str = attr.ib(kw_only=True, repr=True, converter=str)
+
+    client_uuid: str = attr.ib(kw_only=True, repr=False)
 
     asr_latency: MaybeFloat = attr.ib(
         kw_only=True, default=None, converter=float_maybestr, repr=False
@@ -233,7 +238,10 @@ class Turn:
             flow_version=record.flow_version,
             flow_id=record.flow_id,
             flow_name=record.flow_name,
+            flow_uuid=record.flow_uuid,
+            template_id=record.template_id,
             call_duration=record.call_duration,
+            client_uuid=record.client_uuid,
         )
 
     def serialize(self, _, __, value):
