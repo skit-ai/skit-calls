@@ -1,5 +1,8 @@
 # CHANGELOG
 
+0.2.40
+- udpate: adding template_id, flow_uuid & client_uuid for downstream studio call url generation (#23)
+
 0.2.39
 - fix: failing when org-ids are not provided but template-id is provided while sampling calls
 
