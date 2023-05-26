@@ -8,6 +8,8 @@ from collections import namedtuple
 from datetime import datetime
 from typing import Any, Dict, List, Tuple, Optional
 from urllib.parse import unquote, urljoin
+import boto3
+from botocore.exceptions import ClientError
 
 import attr
 
@@ -23,6 +25,8 @@ IntentScore = MaybeFloat
 Slots = Things
 Entities = Things
 Utterances = Things
+
+S3_CLIENT = boto3.client('s3')
 
 
 def prediction2intent(prediction: Thing) -> Tuple[IntentName, IntentScore, Slots]:
@@ -105,6 +109,27 @@ def get_call_url(
     return urljoin(os.path.join(base, ""), unquote(path).lstrip("/")) + extension
 
 
+def generate_presigned_url(s3_client: boto3.client, client_method, method_parameters, expires_in):
+    """
+    Generate a presigned Amazon S3 URL that can be used to perform an action.
+
+    :param s3_client: A Boto3 Amazon S3 client.
+    :param client_method: The name of the client method that the URL performs.
+    :param method_parameters: The parameters of the specified client method.
+    :param expires_in: The number of seconds the presigned URL is valid for.
+    :return: The presigned URL.
+    """
+    try:
+        url = s3_client.generate_presigned_url(
+            ClientMethod=client_method,
+            Params=method_parameters,
+            ExpiresIn=expires_in
+        )
+    except ClientError:
+        raise ValueError("Couldn't get a presigned URL for params '%s'.", method_parameters)
+    return url
+
+
 def get_url(
     base: MaybeString,
     path: MaybeString,
@@ -113,11 +138,21 @@ def get_url(
     use_fsm_url: bool = False
 ) -> MaybeString:
     # when use_fsm_url is False -> get audio url from s3
-    # else use fsm url
+    # else use presigned url to get audio from s3
     
     audio_url = urljoin(os.path.join(base, ""), unquote(path).lstrip("/"))
-    fsm_url = urljoin(domain_url, f"calls-with-cors/{call_uuid}/audio/?audio_url={audio_url}&audio_path={unquote(path)}")
-    return fsm_url if use_fsm_url else audio_url
+    if use_fsm_url:
+        bucket = audio_url.split("amazonaws.com/")[-1].split("/")[0]
+        key = unquote(path).lstrip("/")
+        presigned_url = generate_presigned_url(
+            s3_client=S3_CLIENT,
+            client_method='get_object',
+            method_parameters={'Bucket': bucket, 'Key': key},
+            expires_in=604800 # 7 days
+        )
+        return presigned_url
+    
+    return audio_url
 
 
 def get_readable_reftime(reftime: str) -> str:
