@@ -1,5 +1,8 @@
 # CHANGELOG
 
+0.2.41
+- add: get presigned url logic
+
 0.2.40
 - udpate: adding template_id, flow_uuid & client_uuid for downstream studio call url generation (#23)
 
