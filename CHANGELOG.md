@@ -1,5 +1,8 @@
 # CHANGELOG
 
+0.2.42
+- add: downgraded boto3
+
 0.2.41
 - add: get presigned url logic
 
