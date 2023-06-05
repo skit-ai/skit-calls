@@ -1,5 +1,8 @@
 # CHANGELOG
 
+0.2.43
+- add: s3 client aws access id and keys secrets
+
 0.2.42
 - add: downgraded boto3
 
