@@ -26,7 +26,7 @@ Slots = Things
 Entities = Things
 Utterances = Things
 
-S3_CLIENT = boto3.client('s3')
+S3_CLIENT = boto3.client('s3', aws_access_key_id=const.AWS_ACCESS_KEY_ID, aws_secret_access_key=const.AWS_SECRET_ACCESS_KEY, aws_session_token=None)
 
 
 def prediction2intent(prediction: Thing) -> Tuple[IntentName, IntentScore, Slots]:

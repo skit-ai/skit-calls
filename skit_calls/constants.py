@@ -18,6 +18,8 @@ a_dict[const.KEY]
 ```
 In the latter, a mature IDE will suggest the KEY constant, reducing time and ensuring consistency.
 """
+import os
+
 ID = "id"
 AUTHORIZATION = "authorization"
 ROUTE__CALL = "/call_report/calls/"
@@ -79,6 +81,9 @@ specified environment.
 Learn about this library at: https://github.com/skit-ai/skit-calls
 """.strip()
 # ------------------------------------------------------------------
+
+AWS_ACCESS_KEY_ID = os.getenv("AWS_ACCESS_KEY_ID")
+AWS_SECRET_ACCESS_KEY = os.getenv("AWS_SECRET_ACCESS_KEY")
 
 ON_DISK = "on-disk"
 IN_MEMORY = "in-memory"
