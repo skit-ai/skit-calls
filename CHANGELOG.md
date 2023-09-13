@@ -1,5 +1,8 @@
 # CHANGELOG
 
+0.2.44
+- add: log call volumes fetched from FSM
+
 0.2.43
 - add: s3 client aws access id and keys secrets
 

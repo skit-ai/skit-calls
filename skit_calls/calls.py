@@ -119,6 +119,7 @@ def sample(
         excluded_numbers=ignore_callers,
         reported=reported,
     )
+    logger.info(f"Number of call Ids obtained is {len(random_call_ids)}")
     random_call_data = query.gen_random_calls(
         random_call_ids,
         asr_provider=asr_provider,
@@ -130,6 +131,7 @@ def sample(
         use_fsm_url=use_fsm_url,
         timezone=timezone,
     )
+    logger.info(f"Number of call with data obtained is {len(random_call_data)}")
     if on_disk:
         return save_turns_on_disk(random_call_data)
     return save_turns_in_memory(random_call_data)
