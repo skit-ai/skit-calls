@@ -1,5 +1,8 @@
 # CHANGELOG
 
+0.2.45
+- add: Logs time needed to fetch calls from FSM Db
+
 0.2.44
 - add: log call volumes fetched from FSM and update dependencies
 

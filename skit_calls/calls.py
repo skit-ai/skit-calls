@@ -1,5 +1,6 @@
 import csv
 import tempfile
+import time
 from typing import Any, Dict, Iterable, List, Optional, Union, Set
 
 import pandas as pd
@@ -8,7 +9,6 @@ from loguru import logger
 from skit_calls import constants as const
 from skit_calls.data import mutators, query
 from skit_calls.data.model import Turn
-from skit_calls.utils import optimal_paging_params
 
 
 def save_turns_in_memory(stream: Iterable[Dict[str, Any]]) -> pd.DataFrame:
@@ -63,8 +63,8 @@ def sample(
     :param end_date: An end date for the sampling.
     :type end_date: str
 
-    :param lang_code: A language code.
-    :type lang_code: str
+    :param lang: A language code.
+    :type lang: str
 
     :param use_fsm_url: Whether to use turn audio url from fsm or s3 path.
     :type use_fsm_url: bool
@@ -105,6 +105,7 @@ def sample(
     :return: A directory path if save is set to "files" otherwise path to a file.
     :rtype: str
     """
+    start_time = time.time()
     random_call_ids = query.gen_random_call_ids(
         start_date,
         end_date,
@@ -120,6 +121,9 @@ def sample(
         reported=reported,
     )
     logger.info(f"Number of call Ids obtained is {len(random_call_ids)}")
+    end_time_first = time.time()
+    total_time = str(end_time_first - start_time)
+    logger.info(f"Time required to obtain call IDs {total_time} seconds")
     random_call_data = query.gen_random_calls(
         random_call_ids,
         asr_provider=asr_provider,
@@ -132,6 +136,9 @@ def sample(
         timezone=timezone,
     )
     logger.info(f"Number of call with data obtained is {len(random_call_data)}")
+    end_time_second = time.time()
+    total_time_second_query = str(end_time_second - end_time_first)
+    logger.info(f"Time required to obtain call data from queried IDs {total_time_second_query} seconds")
     if on_disk:
         return save_turns_on_disk(random_call_data)
     return save_turns_in_memory(random_call_data)
@@ -172,6 +179,6 @@ def select(
         if on_disk:
             return save_turns_on_disk(random_call_data)
         return save_turns_in_memory(random_call_data)
-    except SerializationFailure as e:
+    except Exception as e:
         logger.error(e)
         logger.error(f"This error is common if you are requesting a large dataset.")
