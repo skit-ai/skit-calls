@@ -1,4 +1,6 @@
 # CHANGELOG
+0.2.46
+- add: Address bug of reading length of stream
 
 0.2.45
 - add: Logs time needed to fetch calls from FSM Db

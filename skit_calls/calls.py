@@ -135,13 +135,14 @@ def sample(
         use_fsm_url=use_fsm_url,
         timezone=timezone,
     )
-    logger.info(f"Number of call with data obtained is {len(random_call_data)}")
     end_time_second = time.time()
     total_time_second_query = str(end_time_second - end_time_first)
     logger.info(f"Time required to obtain call data from queried IDs {total_time_second_query} seconds")
     if on_disk:
         return save_turns_on_disk(random_call_data)
-    return save_turns_in_memory(random_call_data)
+    df = save_turns_in_memory(random_call_data)
+    logger.info(f"Number of call with data obtained is {df.shape[0]}")
+    return df
 
 
 def select(
