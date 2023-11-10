@@ -9,7 +9,7 @@ from loguru import logger
 from skit_calls import constants as const
 from skit_calls.data import mutators, query
 from skit_calls.data.model import Turn
-
+from skit_calls import utils
 
 def save_turns_in_memory(stream: Iterable[Dict[str, Any]]) -> pd.DataFrame:
     return pd.DataFrame(list(stream))
@@ -47,6 +47,7 @@ def sample(
     batch_turns: int = const.TURNS_LIMIT,
     delay: float = const.Q_DELAY,
     timezone: str = const.DEFAULT_TIMEZONE,
+    flow_ids: Optional[List[str]] = [],
 ) -> Union[str, pd.DataFrame]:
     """
     Sample calls.
@@ -106,6 +107,9 @@ def sample(
     :rtype: str
     """
     start_time = time.time()
+    logger.info(f"Flow ids: {flow_ids}")
+    flow_ids = utils.convert_str_to_int_list(flow_ids)
+    random_id_limit=75000
     random_call_ids = query.gen_random_call_ids(
         start_date,
         end_date,
@@ -119,6 +123,8 @@ def sample(
         flow_name=flow_name,
         excluded_numbers=ignore_callers,
         reported=reported,
+        flow_id=flow_ids,
+        random_id_limit=random_id_limit,
     )
     logger.info(f"Number of call Ids obtained is {len(random_call_ids)}")
     end_time_first = time.time()

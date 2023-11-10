@@ -35,9 +35,11 @@ def gen_random_call_ids(
     lang: Optional[str] = None,
     template_id: Optional[int] = None,
     flow_name: Optional[str] = None,
+    flow_id:  Optional[Set[str]] = [],
     min_duration: Optional[float] = None,
     excluded_numbers: Optional[Set[str]] = None,
     retry_limit: int = 2,
+    random_id_limit: int = const.DEFAULT_CALL_QUANTITY,
 ):
     excluded_numbers = set(excluded_numbers) or set()
     ids_ = set(ids_) or set()
@@ -56,6 +58,8 @@ def gen_random_call_ids(
         const.FLOW_NAME: flow_name,
         const.LIMIT: limit + const.MARGIN * limit,
         const.TEMPLATE_ID: template_id,
+        const.FLOW_ID: flow_id,
+        const.RANDOM_ID_LIMT: random_id_limit
     }
 
     logger.debug(f"call_filters={pformat(call_filters)} | {limit=}")
