@@ -43,12 +43,16 @@ def gen_random_call_ids(
 ):
     excluded_numbers = set(excluded_numbers) or set()
     ids_ = set(ids_) or set()
+    if not ids_ or template_id :
+        ids_ = None
+    elif ids_ and   not template_id:
+        ids_= tuple(ids_)
     excluded_numbers = excluded_numbers.union(const.DEFAULT_IGNORE_CALLERS_LIST)
     reported_status = 0 if reported else None
     call_filters = {
         const.END_DATE: end_date,
         const.START_DATE: start_date,
-        const.ID: tuple(ids_) if not template_id else (None,),
+        const.ID: ids_,
         const.CALL_TYPE: tuple(call_type),
         const.RESOLVED: reported_status,
         const.LANG: lang,
