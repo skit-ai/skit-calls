@@ -142,3 +142,5 @@ CONVERSATION_SUB_TYPES = "conversation_sub_types"
 UCASE_INPUT = "INPUT"
 UCASE_AUDIO = "AUDIO"
 MARGIN = 0.1
+MIN_ASSURED_CALL_QUANTITY = 25 # minimum assured  number of calls per flow id
+MIN_RANDOM_CALL_ID_LIMIT = 750  # An upper limit of  MIN_ASSURED_CALL_QUANTITY * 30

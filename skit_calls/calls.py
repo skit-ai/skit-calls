@@ -9,7 +9,7 @@ from loguru import logger
 from skit_calls import constants as const
 from skit_calls.data import mutators, query
 from skit_calls.data.model import Turn
-from skit_calls import utils
+from skit_calls.utils import convert_str_to_int_list
 
 def save_turns_in_memory(stream: Iterable[Dict[str, Any]]) -> pd.DataFrame:
     return pd.DataFrame(list(stream))
@@ -138,23 +138,24 @@ def sample(
 
     :param timezone: Timezone for the sampling, defaults to "Asia/Kolkata"
     :type timezone: str, optional
+    
+    :param flow_ids: A list of flow ids from which to retrieve the data
+    :type flow_ids: Optional[str]
 
     :return: A directory path if save is set to "files" otherwise path to a file.
     :rtype: str
     """
     start_time = time.time()
     logger.info(f"Flow ids: {flow_ids}")
-    flow_ids = utils.convert_str_to_int_list(flow_ids)
-    min_call_quantity = 25
+    flow_ids = convert_str_to_int_list(flow_ids)
     random_id_limit = min(30*call_quantity, 75000)
-    min_random_call_id_limit = 25*30
     all_call_ids = []
-    org_ids = utils.convert_str_to_int_list(org_ids)
+    org_ids = convert_str_to_int_list(org_ids)
     for flow_id in flow_ids:
         flow_id_list = []
         flow_id_list.append(flow_id)
-        random_call_ids =  get_call_ids_for_flow(flow_id_list, min_call_quantity, 
-                                                min_random_call_id_limit, start_date,
+        random_call_ids =  get_call_ids_for_flow(flow_id_list, const.MIN_ASSURED_CALL_QUANTITY, 
+                                                const.MIN_RANDOM_CALL_ID_LIMIT, start_date,
                                                 end_date, org_ids, call_type, lang,
                                                 min_duration, template_id, use_case,
                                                 flow_name, ignore_callers, reported)
