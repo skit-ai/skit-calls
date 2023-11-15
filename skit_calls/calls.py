@@ -9,7 +9,7 @@ from loguru import logger
 from skit_calls import constants as const
 from skit_calls.data import mutators, query
 from skit_calls.data.model import Turn
-
+from skit_calls.utils import convert_str_to_int_list
 
 def save_turns_in_memory(stream: Iterable[Dict[str, Any]]) -> pd.DataFrame:
     return pd.DataFrame(list(stream))
@@ -23,6 +23,42 @@ def save_turns_on_disk(stream: Iterable[Dict[str, Any]]) -> str:
         for turn in stream:
             writer.writerow(turn)
     return file_path
+
+def get_call_ids_for_flow(flow_id, 
+                        call_quantity, 
+                        random_call_id_limit,
+                        start_date,
+                        end_date,
+                        org_ids,
+                        call_type,
+                        lang,
+                        min_duration,
+                        template_id,
+                        use_case,
+                        flow_name,
+                        ignore_callers,
+                        reported):
+    logger.info(f"Random id limit {random_call_id_limit}")
+    logger.info(f"Call quantity limit {call_quantity}")
+    logger.info(f"Flow ids {flow_id}")
+    call_ids = query.gen_random_call_ids(
+        start_date=start_date,
+        end_date=end_date,
+        ids_=org_ids,
+        limit=call_quantity,
+        call_type=call_type,
+        lang=lang,
+        min_duration=min_duration,
+        template_id=template_id,
+        use_case=use_case,
+        flow_name=flow_name,
+        excluded_numbers=ignore_callers,
+        reported=reported,
+        flow_id=flow_id,
+        random_id_limit=random_call_id_limit
+    )
+    logger.info(f"Number of call Ids obtained is {len(call_ids)}")
+    return call_ids
 
 
 def sample(
@@ -47,6 +83,7 @@ def sample(
     batch_turns: int = const.TURNS_LIMIT,
     delay: float = const.Q_DELAY,
     timezone: str = const.DEFAULT_TIMEZONE,
+    flow_ids: Optional[List[str]] = [],
 ) -> Union[str, pd.DataFrame]:
     """
     Sample calls.
@@ -101,29 +138,53 @@ def sample(
 
     :param timezone: Timezone for the sampling, defaults to "Asia/Kolkata"
     :type timezone: str, optional
+    
+    :param flow_ids: A list of flow ids from which to retrieve the data
+    :type flow_ids: Optional[str]
 
     :return: A directory path if save is set to "files" otherwise path to a file.
     :rtype: str
     """
     start_time = time.time()
-    random_call_ids = query.gen_random_call_ids(
-        start_date,
-        end_date,
-        ids_=org_ids,
-        limit=call_quantity,
-        call_type=call_type,
-        lang=lang,
-        min_duration=min_duration,
-        template_id=template_id,
-        use_case=use_case,
-        flow_name=flow_name,
-        excluded_numbers=ignore_callers,
-        reported=reported,
-    )
-    logger.info(f"Number of call Ids obtained is {len(random_call_ids)}")
-    end_time_first = time.time()
-    total_time = str(end_time_first - start_time)
-    logger.info(f"Time required to obtain call IDs {total_time} seconds")
+    logger.info(f"Flow ids: {flow_ids}")
+    flow_ids = convert_str_to_int_list(flow_ids)
+    random_id_limit = min(30*call_quantity, 75000)
+    all_call_ids = []
+    org_ids = convert_str_to_int_list(org_ids)
+    for flow_id in flow_ids:
+        flow_id_list = []
+        flow_id_list.append(flow_id)
+        random_call_ids =  get_call_ids_for_flow(flow_id_list, const.MIN_ASSURED_CALL_QUANTITY, 
+                                                const.MIN_RANDOM_CALL_ID_LIMIT, start_date,
+                                                end_date, org_ids, call_type, lang,
+                                                min_duration, template_id, use_case,
+                                                flow_name, ignore_callers, reported)
+        random_call_id_list_1= list(random_call_ids)
+        logger.info(f"Number of call ids for flow {flow_id}: {len(random_call_id_list_1)}")
+        all_call_ids += random_call_id_list_1
+    
+    loop_end_time = time.time()
+    final_time = str(loop_end_time-start_time)
+    logger.info(f"Time to finish loop: {final_time}")
+            
+    random_call_ids =  get_call_ids_for_flow(flow_ids, call_quantity, 
+                                            random_id_limit, start_date,
+                                            end_date, org_ids, call_type, lang,
+                                            min_duration, template_id, use_case,
+                                            flow_name, ignore_callers, reported)
+    
+    end_time_1 = time.time()
+    final_time_1 = str(end_time_1-start_time)
+    
+    random_call_id_list_2= list(random_call_ids)
+    all_call_ids += random_call_id_list_2
+    
+    final_call_ids = tuple(set(all_call_ids))
+    
+    logger.info(f"Number of call ids: {len(final_call_ids)}")
+    
+    logger.info(f"Time to finish getting call ids: {final_time_1}")
+
     random_call_data = query.gen_random_calls(
         random_call_ids,
         asr_provider=asr_provider,
@@ -136,14 +197,13 @@ def sample(
         timezone=timezone,
     )
     end_time_second = time.time()
-    total_time_second_query = str(end_time_second - end_time_first)
+    total_time_second_query = str(end_time_second - end_time_1)
     logger.info(f"Time required to obtain call data from queried IDs {total_time_second_query} seconds")
     if on_disk:
         return save_turns_on_disk(random_call_data)
     df = save_turns_in_memory(random_call_data)
     logger.info(f"Number of call with data obtained is {df.shape[0]}")
     return df
-
 
 def select(
     call_ids: Optional[List[int]] = None,

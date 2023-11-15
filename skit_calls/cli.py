@@ -188,6 +188,13 @@ def build_sample_command(parser: argparse.ArgumentParser) -> None:
         help="A comma separated list of states to keep turns from, and remove all else.",
         default=[],
     )
+    parser.add_argument(
+        "--flow-ids",
+        type=str,
+        nargs="*",
+        help="A comma separated list of flow ids to keep turns from, and remove all else.",
+        default=[],
+    )
 
 
 def build_select_command(parser: argparse.ArgumentParser) -> None:
@@ -299,6 +306,7 @@ def random_sample_calls(args: argparse.Namespace) -> Union[str, pd.DataFrame]:
         batch_turns=args.batch_turns,
         delay=args.delay,
         timezone=args.timezone,
+        flow_ids=args.flow_ids
     )
     logger.info(f"Finished in {time.time() - start:.2f} seconds")
     return maybe_df
