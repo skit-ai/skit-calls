@@ -92,9 +92,9 @@ def optimal_paging_params(total_count: int, page_size: int, delay: int) -> Tuple
         page_size //= 1.8
     return int(page_size), delay
 
-def convert_str_to_int_list(str_values):
+def process_ids_to_int(str_values):
     int_list = []
-    if str_values and len(str_values[0])>0:
+    if str_values and isinstance(str_values[0], str):
         str_list = str_values[0].strip("[]").split(',')
         int_list = [int(value) for value in str_list]
     return int_list
