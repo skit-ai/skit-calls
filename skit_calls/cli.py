@@ -10,7 +10,7 @@ from loguru import logger
 
 from skit_calls import calls
 from skit_calls import constants as const
-from skit_calls import utils
+from skit_calls.utils import configure_logger, process_ids_to_int
 
 
 def to_datetime(date_string: Optional[str]) -> datetime:
@@ -282,6 +282,13 @@ def random_sample_calls(args: argparse.Namespace) -> Union[str, pd.DataFrame]:
     args.start_date, args.end_date = process_date_filters(
         args.start_date, args.end_date, timezone=args.timezone
     )
+    
+    args.flow_ids = process_ids_to_int(args.flow_ids)
+    args.org_ids = process_ids_to_int(args.org_ids)
+    
+    logger.info(f"args.flow_id {args.flow_ids}")
+    logger.info(f"args.org_ids {args.org_ids}")
+    
     validate_date_ranges(args.start_date, args.end_date)
     start = time.time()
     maybe_df = calls.sample(
@@ -313,7 +320,7 @@ def random_sample_calls(args: argparse.Namespace) -> Union[str, pd.DataFrame]:
 
 
 def cmd_to_str(args: argparse.Namespace) -> str:
-    utils.configure_logger(args.verbose)
+    configure_logger(args.verbose)
 
     maybe_df = None
     if args.command == "sample":

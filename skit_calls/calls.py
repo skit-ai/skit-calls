@@ -9,7 +9,6 @@ from loguru import logger
 from skit_calls import constants as const
 from skit_calls.data import mutators, query
 from skit_calls.data.model import Turn
-from skit_calls.utils import convert_str_to_int_list
 
 def save_turns_in_memory(stream: Iterable[Dict[str, Any]]) -> pd.DataFrame:
     return pd.DataFrame(list(stream))
@@ -146,11 +145,9 @@ def sample(
     :rtype: str
     """
     start_time = time.time()
-    logger.info(f"Flow ids: {flow_ids}")
-    flow_ids = convert_str_to_int_list(flow_ids)
     random_id_limit = min(30*call_quantity, 75000)
     all_call_ids = []
-    org_ids = convert_str_to_int_list(org_ids)
+    logger.info(f"Flow ids: {flow_ids}")
     for flow_id in flow_ids:
         flow_id_list = []
         flow_id_list.append(flow_id)
