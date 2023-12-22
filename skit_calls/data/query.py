@@ -42,11 +42,11 @@ def gen_random_call_ids(
     random_id_limit: int = const.DEFAULT_CALL_QUANTITY,
 ):
     excluded_numbers = set(excluded_numbers) or set()
-    ids_ = set(ids_) or set()
-    if not ids_ or template_id :
+    
+    if ids_:
+        ids_= tuple(set(ids_))
+    else:
         ids_ = None
-    elif ids_ and   not template_id:
-        ids_= tuple(ids_)
     excluded_numbers = excluded_numbers.union(const.DEFAULT_IGNORE_CALLERS_LIST)
     reported_status = 0 if reported else None
     call_filters = {
