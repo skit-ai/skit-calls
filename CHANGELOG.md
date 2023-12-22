@@ -1,4 +1,7 @@
 # CHANGELOG
+0.2.50
+- fix: error when client_id absent
+
 0.2.49
 - add: Multiple flow id support for fetch calls
 - update: Credentials to access FSM db
