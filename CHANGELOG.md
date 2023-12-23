@@ -1,4 +1,7 @@
 # CHANGELOG
+0.2.51
+- fix: error with query for fetch calls
+
 0.2.50
 - fix: error when client_id absent
 
