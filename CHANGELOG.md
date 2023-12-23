@@ -1,4 +1,7 @@
 # CHANGELOG
+0.2.52
+- add: logs and fix function definition
+
 0.2.51
 - fix: error with query for fetch calls
 
