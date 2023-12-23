@@ -65,7 +65,7 @@ def sample(
     end_date: str,
     lang: str,
     domain_url: str,
-    org_ids: Optional[Set[str]] = None,
+    org_ids: Optional[List[str]] = [],
     call_quantity: int = 200,
     call_type: List[str] = [const.INBOUND, const.OUTBOUND],
     use_fsm_url: bool = False,

@@ -45,6 +45,10 @@ def gen_random_call_ids(
     
     if not ids_:
         ids_ = None
+        
+    logger.info(f"Org id = {ids_}")
+    logger.info(f"Template id = {template_id}")
+    
     excluded_numbers = excluded_numbers.union(const.DEFAULT_IGNORE_CALLERS_LIST)
     reported_status = 0 if reported else None
     call_filters = {
