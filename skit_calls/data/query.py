@@ -43,9 +43,7 @@ def gen_random_call_ids(
 ):
     excluded_numbers = set(excluded_numbers) or set()
     
-    if ids_:
-        ids_= tuple(set(ids_))
-    else:
+    if not ids_:
         ids_ = None
     excluded_numbers = excluded_numbers.union(const.DEFAULT_IGNORE_CALLERS_LIST)
     reported_status = 0 if reported else None
