@@ -1,4 +1,7 @@
 # CHANGELOG
+0.2.53
+- add: new columns for randomly sampled calls - previous_disposition
+
 0.2.52
 - add: logs and fix function definition
 
