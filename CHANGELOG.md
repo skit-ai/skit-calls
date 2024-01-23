@@ -1,4 +1,7 @@
 # CHANGELOG
+0.2.54
+- change: set right value for DB_HOST
+
 0.2.53
 - add: new columns for randomly sampled calls - previous_disposition
 
