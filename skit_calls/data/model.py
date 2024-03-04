@@ -210,6 +210,7 @@ class Turn:
     call_end_status: MaybeString = attr.ib(kw_only=True, default=None, repr=False)
     disposition: MaybeString = attr.ib(kw_only=True, default=None, repr=False)
     previous_disposition: MaybeString = attr.ib(kw_only=True, default=None, repr=False)
+    blocking_disposition: MaybeString = attr.ib(kw_only=True, default=None, repr=False)
     virtual_number: MaybeString = attr.ib(kw_only=True, default=None, repr=False)
     flow_version: MaybeString = attr.ib(kw_only=True, default=None, repr=False)
     flow_id: MaybeString = attr.ib(kw_only=True, default=None, repr=False)
@@ -252,6 +253,7 @@ class Turn:
             call_type=record.call_type,
             disposition=record.disposition,
             previous_disposition=record.previous_disposition,
+            blocking_disposition=record.blocking_disposition,
             reftime=reftime,
             readable_reftime=readable_reftime,
             state=record.state,
