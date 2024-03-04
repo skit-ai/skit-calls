@@ -1,4 +1,7 @@
 # CHANGELOG
+0.2.55
+- add: new columns for randomly sampled calls - blocking_disposition
+
 0.2.54
 - change: set right value for DB_HOST
 
