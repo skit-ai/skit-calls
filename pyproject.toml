@@ -16,7 +16,7 @@ dvc = {extras = ["s3"], version = "3.55.1"}
 loguru = "0.5.3"
 numpy = "^1.22.0"
 pandas = "^1.4.2"
-psycopg2 = "^2.9.3"
+psycopg2-binary = "^2.9.3"
 pydash = "^6.0.0"
 PyYAML = "^6.0"
 toml = "0.10.2"
