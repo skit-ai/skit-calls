@@ -1,4 +1,7 @@
 # CHANGELOG
+0.2.56
+- update: Packages for vulnerablity fix
+
 0.2.55
 - add: new columns for randomly sampled calls - blocking_disposition
 
